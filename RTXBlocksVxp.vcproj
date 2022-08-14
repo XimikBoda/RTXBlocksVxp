@@ -228,7 +228,23 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\c_fix.c"
+				>
+			</File>
+			<File
+				RelativePath=".\Keyboard.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RTXBlocksVxp.def"
+				>
+			</File>
+			<File
+				RelativePath=".\Sock.cpp"
 				>
 			</File>
 		</Filter>
@@ -236,6 +252,22 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\Keyboard.h"
+				>
+			</File>
+			<File
+				RelativePath=".\main.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Profont6x11.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sock.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
