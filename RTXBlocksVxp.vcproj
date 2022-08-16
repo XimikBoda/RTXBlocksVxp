@@ -240,6 +240,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Protocol.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RTXBlocksVxp.def"
 				>
 			</File>
@@ -262,6 +266,10 @@
 			</File>
 			<File
 				RelativePath=".\Profont6x11.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Protocol.h"
 				>
 			</File>
 			<File

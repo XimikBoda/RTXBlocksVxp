@@ -124,7 +124,7 @@ namespace Sock
 		return 0;
 	}
 
-	void get_ip_by_dns(const char* host, void (*f)(vm_sockaddr_struct addr)){
+	void get_ip_by_dns(const char* host){
 		vm_soc_dns_result dns;
 
 		int u = vm_soc_get_host_by_name(1, host, &dns, d_callback);

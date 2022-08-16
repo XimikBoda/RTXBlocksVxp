@@ -6,5 +6,10 @@ const int udp_in_buf_size = 10240*2, udp_out_buf_size = 10240*2;
 namespace Sock
 {
 	void init();
+	void tcp_connect(const char* host, const VMINT port);
+	void udp_connect(const VMINT port);
+	void get_ip_by_dns(const char* host);
+	void update();
+	void deinit();
 };
 

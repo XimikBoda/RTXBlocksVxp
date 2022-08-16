@@ -51,6 +51,7 @@ void handle_sysevt(VMINT message, VMINT param) {
 			vm_graphic_delete_layer(layer_hdls[1]);
 			vm_graphic_delete_layer(layer_hdls[0]);
 		}
+		Sock::deinit();
 		break;	
 	}
 }
