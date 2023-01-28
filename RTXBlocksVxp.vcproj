@@ -240,6 +240,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PacketMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PacketOpener.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Protocol.cpp"
 				>
 			</File>
@@ -262,6 +270,14 @@
 			</File>
 			<File
 				RelativePath=".\main.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PacketMaker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PacketOpener.h"
 				>
 			</File>
 			<File

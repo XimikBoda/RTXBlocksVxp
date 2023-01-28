@@ -1,6 +1,9 @@
 #include "main.h"
 #include "Keyboard.h"
 #include "Sock.h"
+#include "Protocol.h"
+#include "PacketMaker.h"
+#include "PacketOpener.h"
 
 int scr_w = 0, scr_h =0; //screen width and height
 VMUINT8 *layer_bufs[2] = {0,0};
@@ -9,16 +12,42 @@ VMINT layer_hdls[2] = {-1,-1};
 void handle_sysevt(VMINT message, VMINT param);
 void handle_keyevt(VMINT event, VMINT keycode);
 
+void init_all(){
+	Keyboard::init();
+	Sock::init();
+	Protocol::init();
+	PacketMaker::init();
+	PacketOpener::init();
+}
+
+void deinit_all(){
+	Sock::deinit();
+	//Protocol::deinit();
+	PacketMaker::deinit();
+	PacketOpener::deinit();
+}
+
+void temp_timer(int tid){
+	Protocol::update();
+}
+
 void vm_main(void){
 	scr_w = vm_graphic_get_screen_width(); 
 	scr_h = vm_graphic_get_screen_height();
 
-	Keyboard::init();
-	Sock::init();
+	srand(vm_get_tick_count());
+
+	init_all();
+
+	Protocol::connect();
 	
 	vm_reg_sysevt_callback(handle_sysevt);
 	vm_reg_keyboard_callback(handle_keyevt);
+
+	vm_create_timer_ex(10, temp_timer);
 }
+
+
 
 
 void handle_sysevt(VMINT message, VMINT param) {
@@ -51,7 +80,7 @@ void handle_sysevt(VMINT message, VMINT param) {
 			vm_graphic_delete_layer(layer_hdls[1]);
 			vm_graphic_delete_layer(layer_hdls[0]);
 		}
-		Sock::deinit();
+		deinit_all();
 		break;	
 	}
 }
