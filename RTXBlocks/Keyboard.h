@@ -1,4 +1,5 @@
 #pragma once
+#ifndef MRE
 #include <SFML/Window/Event.hpp>
 
 /* Key events supported by MRE. */
@@ -33,6 +34,8 @@
 #define VM_KEY_VOL_DOWN       (59)      /* Volume key down */
 #define VM_KEY_POUND          (35)      /* Key # */
 #define VM_KEY_STAR              (42)   /* Key * */
+#endif // MRE
+
 
 namespace Keyboard
 {
@@ -46,8 +49,8 @@ namespace Keyboard
 	void update();
 
 	void keyboard_event(int k, int ev);
-
+#ifndef MRE
 	void keyMaping(sf::Event ev);
-
+#endif // MRE
 };
 

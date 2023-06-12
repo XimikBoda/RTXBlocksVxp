@@ -40,7 +40,7 @@ namespace Keyboard
 		else
 			key[k + 9] = ev;
 	}
-
+#ifndef MRE
 	void keyMaping(sf::Event ev) {
 		int p = 0;
 		if (ev.type == sf::Event::EventType::KeyPressed)
@@ -89,5 +89,5 @@ namespace Keyboard
 			break;
 		}
 	}
-
+#endif // MRE
 };
