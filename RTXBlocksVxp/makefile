@@ -11,8 +11,10 @@ GPP_PARAM = -fno-threadsafe-statics -fdata-sections -ffunction-sections $(SHARED
 LINK_LIB = -l:percommon.a -l:pertcp.a -l:persensor.a -l:persmsper.a -l:perbitstream.a -l:percontact.a -l:permms.a -l:persmsmng.a -l:perfile.a -l:perudp.a
 LINK_PARAM = -fno-threadsafe-statics -Wl,--gc-sections -Wl,--print-gc-sections -fpic -fpcc-struct-return -pie -lm -T "$(MRE_SDK)\lib\MRE30\armgcc\scat.ld"
 
-
 PROJECT_NAME = RTXBlocksVxp
+
+APP_NAME = "RTXBlocks"
+AUTHOR = "Ximik_Boda"
 
 build: 
 #	Precheck the Resource 
@@ -31,7 +33,7 @@ build:
 	"$(MRE_SDK)\tools\ResEditor\CmdShell.exe" pack -silent -resolution 240x320 -o "$(CURDIR)\$(PROJECT_NAME).pkd" -e AXF "$(CURDIR)\$(PROJECT_NAME).vcproj" "$(CURDIR)\$(PROJECT_NAME).axf"
 
 #	Add tag infromation 
-	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" "RTXBlocks" "0.1.0" "Ximik_Boda" "2500" "NotSupportBg" "Not Support rotate" "RTXBlocks" "RTXBlocks" "RTXBlocks" "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
+	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" $(APP_NAME) "0.1.0" $(AUTHOR) "2500" "NotSupportBg" "Not Support rotate" $(APP_NAME) $(APP_NAME) $(APP_NAME) "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
 
 
 #copy /y RTXBlocksVxp.vxp "G:\mre\271670312.vxp"
