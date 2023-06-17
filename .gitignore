@@ -365,3 +365,5 @@ FodyWeavers.xsd
 !/lib/**
 
 RTXBlocksVxp/RTXBlocksVxp.dll
+RTXBlocksVxp/RTXBlocksVxp.axf
+RTXBlocksVxp/RTXBlocksVxp.vxp
