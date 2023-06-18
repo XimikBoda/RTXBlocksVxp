@@ -9,6 +9,9 @@
 #include <SFML/Graphics/Sprite.hpp>
 #else
 #include "string.h"
+#include"vmsys.h"
+#define malloc vm_malloc
+#define free vm_free
 #endif // !MRE
 
 unsigned short* blocks;
@@ -33,24 +36,36 @@ unsigned short multiply_color(unsigned short c, unsigned char r, unsigned char g
 sf::Color mask = (sf::Color)(0xFF000000 | VM_COLOR_565_TO_888(VM_COLOR_888_TO_565(255, 0, 255)));
 #endif // !MRE
 
-unsigned short small_palletre[256] = {0};
+unsigned short* small_palletre;
 
 //static const unsigned short use_flag = 0x4000;
 
-bool use[256] = {1};
+bool* use;
 
 int min_n_use = 1;
 
-unsigned short big_palletre[512] = { 0 };
+unsigned short* big_palletre;
 
 
 namespace BlockPalette {
 	void init() {
+		small_palletre = (unsigned short*)malloc(256 * sizeof(unsigned short));
+		use = (bool*)malloc(256 * sizeof(bool));
+		big_palletre = (unsigned short*)malloc(512 * sizeof(unsigned short));
+
+		use[0] = true;
+		big_palletre[0] = 0;
+
 		for (int i = 0; i < 256; ++i)
 			small_palletre[i] = i;
 
 		for (int i = 1; i < 512; ++i)
 			big_palletre[i] = i;
+	}
+	void deinit() {
+		free(small_palletre);
+		free(use);
+		free(big_palletre);
 	}
 
 	void draw_collisions() {

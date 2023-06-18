@@ -76,6 +76,8 @@ void vm_main(void){
 	scr_w = vm_graphic_get_screen_width(); 
 	scr_h = vm_graphic_get_screen_height();
 
+	vm_switch_power_saving_mode(turn_off_mode);
+
 	srand(vm_get_tick_count());
 
 	init_all();
@@ -103,6 +105,8 @@ void handle_sysevt(VMINT message, VMINT param) {
 
 		layer_bufs[0]=vm_graphic_get_layer_buffer(layer_hdls[0]);
 		//layer_bufs[1]=vm_graphic_get_layer_buffer(layer_hdls[1]);
+
+		vm_kbd_set_mode(VM_KEYPAD_2KEY_NUMBER);
 
 		vm_switch_power_saving_mode(turn_off_mode);
 		if (message == VM_MSG_CREATE) {
