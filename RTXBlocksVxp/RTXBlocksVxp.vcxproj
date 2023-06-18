@@ -177,9 +177,11 @@
     <ClCompile Include="..\RTXBlocks\World.cpp" />
     <ClCompile Include="c_fix.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Render.cpp" />
     <ClCompile Include="Sock.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="makefile" />
     <None Include="RTXBlocksVxp.def" />
   </ItemGroup>
   <ItemGroup>

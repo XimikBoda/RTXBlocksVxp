@@ -164,7 +164,7 @@ namespace Player
 		if (Keyboard::pres(VM_KEY_RIGHT))
 			player.a += rot_sp * d_time / 1000.f;
 
-		if (player.acs < 0) {
+		/*if (player.acs < 0) {
 			float player_new_y = player.y + player.acs * d_time / 1000.f;
 
 			if (check_ground(player.x, player_new_y, player.z)) {
@@ -192,7 +192,7 @@ namespace Player
 		}
 		else
 			player.acs -= 9.8 * d_time / 1000.f;
-
+			*/
 		
 
 		char forward = 0, rigth = 0;
@@ -254,17 +254,17 @@ namespace Player
 
 		}
 
-		if (player.acs > 0) {
-			float player_new_y = player.y + player.acs * d_time / 1000.f;
+		//if (player.acs > 0) {
+		//	float player_new_y = player.y + player.acs * d_time / 1000.f;
 
-			if (check_ground(player.x, player_new_y + 1, player.z)) {
-				player.y = (float)((int)player_new_y) + 2.f - player_h;
-				//player.acs = 0;
-				player.on_ground = false;
-			}
-			else
-				player.y = player_new_y;
-		}
+		//	if (check_ground(player.x, player_new_y + 1, player.z)) {
+		//		player.y = (float)((int)player_new_y) + 2.f - player_h;
+		//		//player.acs = 0;
+		//		player.on_ground = false;
+		//	}
+		//	else
+		//		player.y = player_new_y;
+		//}
 
 		if (change_rotation) {
 			Protocol::Set_Player_Rotation();

@@ -15,8 +15,11 @@
 #include <cmath>
 
 #define M_PI       3.14159265358979323846
+const float pi = M_PI;
 
 const unsigned short tr_color = VM_COLOR_888_TO_565(255, 0, 255);
+
+typedef int int_fixed;
 
 void show_error_and_exit(const char *text);
 

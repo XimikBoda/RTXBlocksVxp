@@ -2,13 +2,13 @@ GCC = $(GCC_ARM_NONE_EABI)\arm-none-eabi-gcc.exe
 GPP = $(GCC_ARM_NONE_EABI)\arm-none-eabi-g++
 
 INCLUDES = -I "$(MRE_SDK)\include" -I "$(CURDIR)\include" -I "$(CURDIR)\ResID" -I "$(CURDIR)"
-DEFINES = -D _MINIGUI_LIB_ -D _USE_MINIGUIENTRY -D _NOUNIX_ -D _FOR_WNC -D __MRE_SDK__ -D   __MRE_VENUS_NORMAL__  -D  __MMI_MAINLCD_240X320__ -D MRE
+DEFINES = -D _MINIGUI_LIB_ -D _USE_MINIGUIENTRY -D _NOUNIX_ -D _FOR_WNC -D __MRE_SDK__ -D   __MRE_VENUS_NORMAL__  -D  __MMI_MAINLCD_240X320__ -D MRE -D GCC
 
 SHARED_PARAM = -c -fpic -march=armv5te -fvisibility=hidden -O2 -mlittle-endian $(INCLUDES) $(DEFINES)
 GCC_PARAM = -fno-exceptions -fno-non-call-exceptions -D__MRE_COMPILER_GCC__ $(SHARED_PARAM)
 GPP_PARAM = -fno-threadsafe-statics -fdata-sections -ffunction-sections $(SHARED_PARAM)
 
-LINK_LIB = -l:percommon.a -l:pertcp.a -l:persensor.a -l:persmsper.a -l:perbitstream.a -l:percontact.a -l:permms.a -l:persmsmng.a -l:perfile.a -l:perudp.a
+LINK_LIB = -l:percommon.a -l:pertcp.a -l:persensor.a -l:persmsper.a -l:perbitstream.a -l:percontact.a -l:permms.a -l:persmsmng.a -l:peraudio.a -l:percallout.a -l:percam.a -l:perfile.a -l:perhttp.a -l:persim.a -l:perrecord.a -l:persmssp.a -l:perlbs.a -l:perpro.a -l:pervideo.a -l:perxml.a -l:persec.a -l:persysstorage.a -l:perpayment.a -l:perbt.a -l:perpn.a -l:perudp.a -l:persysfile.a -l:persso.a 
 LINK_PARAM = -fno-threadsafe-statics -Wl,--gc-sections -Wl,--print-gc-sections -fpic -fpcc-struct-return -pie -lm -T "$(MRE_SDK)\lib\MRE30\armgcc\scat.ld"
 
 PROJECT_NAME = RTXBlocksVxp
@@ -30,7 +30,7 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketMaker.cpp -o $(CURDIR)\arm\PacketMaker.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketOpener.cpp -o $(CURDIR)\arm\PacketOpener.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\World.cpp -o $(CURDIR)\arm\World.o
-#	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Render.cpp -o $(CURDIR)\arm\Render.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Render.cpp -o $(CURDIR)\arm\Render.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\BlockPalette.cpp -o $(CURDIR)\arm\BlockPalette.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PlayerInfo.cpp -o $(CURDIR)\arm\PlayerInfo.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Player.cpp -o $(CURDIR)\arm\Player.o
@@ -40,13 +40,13 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Keyboard.cpp -o $(CURDIR)\arm\Keyboard.o
 
 #	Link app
-	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(LINK_LIB) $(LINK_PARAM)
+	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(CURDIR)\arm\Render.o $(LINK_LIB) $(LINK_PARAM)
 
 #	Pack resource to app 
 	"$(MRE_SDK)\tools\ResEditor\CmdShell.exe" pack -silent -resolution 240x320 -o "$(CURDIR)\$(PROJECT_NAME).pkd" -e AXF "$(CURDIR)\$(PROJECT_NAME).vcproj" "$(CURDIR)\$(PROJECT_NAME).axf"
 
 #	Add tag infromation 
-	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" $(APP_NAME) "0.1.0" $(AUTHOR) "2500" "NotSupportBg" "Not Support rotate" $(APP_NAME) $(APP_NAME) $(APP_NAME) "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
+	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" $(APP_NAME) "0.1.0" $(AUTHOR) "2500" "NotSupportBg" "Not Support rotate" $(APP_NAME) $(APP_NAME) $(APP_NAME) "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng Audio Call Camera File HTTP SIM card Record SMS(SP) LBS ProMng Video XML Sec SysStorage Payment BT PUSH UDP SysFile sso" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
 
 
 #copy /y RTXBlocksVxp.vxp "G:\mre\271670312.vxp"

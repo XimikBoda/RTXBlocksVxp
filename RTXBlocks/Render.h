@@ -3,7 +3,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #endif // !MRE
 
-const int s_w = 240*2, s_h = 320*2;
+const int s_w = 240, s_h = 320;
 
 namespace Render
 {

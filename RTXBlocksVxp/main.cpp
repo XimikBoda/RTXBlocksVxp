@@ -22,6 +22,7 @@ void handle_sysevt(VMINT message, VMINT param);
 void handle_keyevt(VMINT event, VMINT keycode);
 
 void init_all(){
+	BlockPalette::init();
 	Keyboard::init();
 	Sock::init();
 	Protocol::init();
@@ -32,13 +33,43 @@ void init_all(){
 
 void deinit_all(){
 	Sock::deinit();
-	//Protocol::deinit();
 	PacketMaker::deinit();
 	PacketOpener::deinit();
 }
 
-void temp_timer(int tid){
+int p_time = 0;
+void main_timer(int tid){
+	int n_time = vm_get_tick_count();
+	int d_time = n_time - p_time;
+	p_time = n_time;
+	if (d_time > 200)
+		d_time = 200;
+
+
 	Protocol::update();
+	Player::update(d_time);
+	Render::main_render();
+	Keyboard::update();
+	vm_graphic_flush_layer(layer_hdls, 1);
+}
+
+void read_from_file_to_addr(const char* path, void ** addr) {
+	VMWCHAR wstr[200];
+	vm_gb2312_to_ucs2(wstr, 200, (VMSTR)path);
+	VMUINT red = 0, size = 0;
+
+	VMFILE f = vm_file_open(wstr, MODE_READ, 1);
+	if (f < 0) {
+		char tmp[100]="";
+		sprintf("%s not found", path);
+		show_error_and_exit("Some file not found");
+		return;
+	}
+	vm_file_getfilesize(f, &size);
+	*addr = vm_malloc(size);
+	vm_file_read(f, *addr, size, &red);
+	vm_file_close(f);
+
 }
 
 void vm_main(void){
@@ -54,10 +85,11 @@ void vm_main(void){
 	vm_reg_sysevt_callback(handle_sysevt);
 	vm_reg_keyboard_callback(handle_keyevt);
 
-	vm_create_timer_ex(10, temp_timer);
+	extern unsigned short* blocks;
+	read_from_file_to_addr("e:\\RTXBlocks\\blocks_texture.bin", (void**)&blocks);
+
+	BlockPalette::biome_set();
 }
-
-
 
 
 void handle_sysevt(VMINT message, VMINT param) {
@@ -65,14 +97,18 @@ void handle_sysevt(VMINT message, VMINT param) {
 	case VM_MSG_CREATE:
 	case VM_MSG_ACTIVE:
 		layer_hdls[0] = vm_graphic_create_layer(0, 0, scr_w, scr_h, -1);
-		layer_hdls[1] = vm_graphic_create_layer(0, 0, scr_w, scr_h, tr_color);
+		//layer_hdls[1] = vm_graphic_create_layer(0, 0, scr_w, scr_h, tr_color);
 		
 		vm_graphic_set_clip(0, 0, scr_w, scr_h);
 
 		layer_bufs[0]=vm_graphic_get_layer_buffer(layer_hdls[0]);
-		layer_bufs[1]=vm_graphic_get_layer_buffer(layer_hdls[1]);
+		//layer_bufs[1]=vm_graphic_get_layer_buffer(layer_hdls[1]);
 
 		vm_switch_power_saving_mode(turn_off_mode);
+		if (message == VM_MSG_CREATE) {
+			Render::init();
+			vm_create_timer_ex(10, main_timer);
+		}
 		break;
 		
 	case VM_MSG_PAINT:
@@ -80,14 +116,14 @@ void handle_sysevt(VMINT message, VMINT param) {
 		
 	case VM_MSG_INACTIVE:
 		vm_switch_power_saving_mode(turn_on_mode);
-		if( layer_hdls[0] != -1 ){
-			vm_graphic_delete_layer(layer_hdls[1]);
-			vm_graphic_delete_layer(layer_hdls[0]);
-		}
+		//if( layer_hdls[0] != -1 ){
+		//	vm_graphic_delete_layer(layer_hdls[1]);
+		//	vm_graphic_delete_layer(layer_hdls[0]);
+		//}
 		break;	
 	case VM_MSG_QUIT:
 		if( layer_hdls[0] != -1 ){
-			vm_graphic_delete_layer(layer_hdls[1]);
+			//vm_graphic_delete_layer(layer_hdls[1]);
 			vm_graphic_delete_layer(layer_hdls[0]);
 		}
 		deinit_all();

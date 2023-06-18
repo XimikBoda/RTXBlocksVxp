@@ -10,7 +10,7 @@
 
 #define WORLD__RC_S_X (1<<WORLD_X_M)
 #define WORLD__RC_S_Z (1<<WORLD_Z_M)
-#define WORLD__RC_S_Y 5
+#define WORLD__RC_S_Y 3
 
 #define WORLD_Z_SH (WORLD_X_M+4)
 #define WORLD_Y_SH ((WORLD_X_M+4)*2)

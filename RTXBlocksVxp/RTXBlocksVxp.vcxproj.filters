@@ -60,11 +60,15 @@
     <ClCompile Include="..\RTXBlocks\BlockPalette.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="RTXBlocksVxp.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">

@@ -3,6 +3,10 @@
 #include <cstdlib>
 #ifndef MRE
 #include <corecrt_malloc.h>
+#else
+#include"vmsys.h"
+#define malloc vm_malloc
+#define free vm_free
 #endif // MRE
 
 static const int SEGMENT_BITS = 0x7F;
