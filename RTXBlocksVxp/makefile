@@ -22,12 +22,25 @@ build:
 	$(GCC) $(GCC_PARAM)  -c $(MRE_SDK)\lib\MRE30\src\gccmain.c -o $(CURDIR)\arm\gccmain.o 
 
 	$(GCC) $(GCC_PARAM) -c $(CURDIR)\c_fix.c -o $(CURDIR)\arm\c_fix.o
+	$(GCC) $(GCC_PARAM) -c $(CURDIR)\..\RTXBlocks\miniz.c -o $(CURDIR)\arm\miniz.o
 
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\main.cpp -o $(CURDIR)\arm\main.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Sock.cpp -o $(CURDIR)\arm\Sock.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Protocol.cpp -o $(CURDIR)\arm\Protocol.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketMaker.cpp -o $(CURDIR)\arm\PacketMaker.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketOpener.cpp -o $(CURDIR)\arm\PacketOpener.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\World.cpp -o $(CURDIR)\arm\World.o
+#	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Render.cpp -o $(CURDIR)\arm\Render.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\BlockPalette.cpp -o $(CURDIR)\arm\BlockPalette.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PlayerInfo.cpp -o $(CURDIR)\arm\PlayerInfo.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Player.cpp -o $(CURDIR)\arm\Player.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Time.cpp -o $(CURDIR)\arm\Time.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Chat.cpp -o $(CURDIR)\arm\Chat.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\UUID.cpp -o $(CURDIR)\arm\UUID.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Keyboard.cpp -o $(CURDIR)\arm\Keyboard.o
 
 #	Link app
-	$(GCC) -o "$(CURDIR)\$(PROJECT_NAME).axf" $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\main.o $(CURDIR)\arm\Keyboard.o $(LINK_LIB) $(LINK_PARAM)
+	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(LINK_LIB) $(LINK_PARAM)
 
 #	Pack resource to app 
 	"$(MRE_SDK)\tools\ResEditor\CmdShell.exe" pack -silent -resolution 240x320 -o "$(CURDIR)\$(PROJECT_NAME).pkd" -e AXF "$(CURDIR)\$(PROJECT_NAME).vcproj" "$(CURDIR)\$(PROJECT_NAME).axf"

@@ -4,7 +4,10 @@
 #include "Keyboard.h"
 #include "Protocol.h"
 #include "collisions.h"
+#include <cmath>
+#ifndef MRE
 #include <imgui.h>
+#endif // !MRE
 
 Player_s player;
 
@@ -30,6 +33,7 @@ static float drob(float a) {
 
 namespace Player
 {
+#ifndef MRE
 	void ImGui_draw() {
 		if (ImGui::Begin("Player")) {
 			if (ImGui::SliderFloat3("Pos", &player.x, 0, 128))
@@ -53,6 +57,7 @@ namespace Player
 		}
 		ImGui::End();
 	}
+#endif // !MRE
 	bool cheack_collision(unsigned short id) {
 		return (collisions_data[id / 8] >> (id % 8)) & 1;
 	}

@@ -1,6 +1,9 @@
 #include "PacketMaker.h"
 #include "string.h"
+#include <cstdlib>
+#ifndef MRE
 #include <corecrt_malloc.h>
+#endif // MRE
 
 static const int SEGMENT_BITS = 0x7F;
 static const int CONTINUE_BIT = 0x80;

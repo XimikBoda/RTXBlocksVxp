@@ -4,7 +4,11 @@
 #include <cmath>
 #include "Protocol.h"
 #include "Player.h"
+#ifndef MRE
 #include <imgui.h>
+#endif // !MRE
+
+
 
 unsigned short* main_canvas_buff;
 int_fixed* main_deep_buff;

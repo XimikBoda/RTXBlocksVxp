@@ -34,6 +34,8 @@
 #define VM_KEY_VOL_DOWN       (59)      /* Volume key down */
 #define VM_KEY_POUND          (35)      /* Key # */
 #define VM_KEY_STAR              (42)   /* Key * */
+#else
+#include "vmio.h"
 #endif // MRE
 
 

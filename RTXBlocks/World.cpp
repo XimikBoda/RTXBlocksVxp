@@ -1,11 +1,17 @@
 #include "World.h"//
 #include "BlockPalette.h"
 #include "Player.h"
+#ifndef MRE
 #include <corecrt_malloc.h>
 #include <imgui.h>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#else
+#include "vmstdlib.h"
+#include <cstdlib>
+#include "string.h"
+#endif // !MRE
 unsigned char* world = 0;
 
 int center_chunk_x = 0;
@@ -194,13 +200,13 @@ namespace World {
 
 	int level=0;
 
+#ifndef MRE
 	void ImGui_draw() {
 		if (ImGui::Begin("World")) {
 			ImGui::Text("Center_chunk: %d, %d, %d", center_chunk_x, center_chunk_y, center_chunk_z);
 		}
 		ImGui::End();
 	}
-
 	void test_draw(sf::Texture& temp_preview, sf::RenderWindow& window) {
 		for (int x = 0; x < WORLD__R_S_X; ++x)
 			for (int z = 0; z < WORLD__R_S_Z; ++z)
@@ -216,4 +222,5 @@ namespace World {
 					}
 
 	}
+#endif
 }

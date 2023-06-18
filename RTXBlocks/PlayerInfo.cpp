@@ -1,5 +1,7 @@
 #include "PlayerInfo.h"
+#ifndef MRE
 #include <imgui.h>
+#endif // !MRE
 
 UUID my_uuid;
 
@@ -8,6 +10,7 @@ static int player_info_count=0;
 
 namespace PlayerInfo
 {
+#ifndef MRE
 	void imgui_draw() {
 		if (ImGui::Begin("PlayerInfo")) {
 			for (int i = 0; i < player_info_count; ++i) {
@@ -20,6 +23,7 @@ namespace PlayerInfo
 		}
 		ImGui::End();
 	}
+#endif // !MRE
 	player_info* get_null() {
 		return &temp[player_info_count];
 	}

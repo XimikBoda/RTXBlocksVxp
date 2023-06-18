@@ -1,11 +1,15 @@
 #include "BlockPalette.h"
 #include "main.h"
 #include "Player.h"
+#ifndef MRE
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#else
+#include "string.h"
+#endif // !MRE
 
 unsigned short* blocks;
 
@@ -25,8 +29,9 @@ unsigned short multiply_color(unsigned short c, unsigned char r, unsigned char g
 	unsigned short bb = (VM_COLOR_GET_BLUE(c) * b) >> 8;
 	return VM_COLOR_888_TO_565(rr, gg, bb);
 }
-
+#ifndef MRE
 sf::Color mask = (sf::Color)(0xFF000000 | VM_COLOR_565_TO_888(VM_COLOR_888_TO_565(255, 0, 255)));
+#endif // !MRE
 
 unsigned short small_palletre[256] = {0};
 
@@ -65,7 +70,7 @@ namespace BlockPalette {
 			}
 		}
 	}
-
+#ifndef MRE
 	void draw_ImGui() {
 		if (ImGui::Begin("BlockPalette")) {
 			static sf::Texture global_tex;
@@ -142,6 +147,7 @@ namespace BlockPalette {
 		}
 		ImGui::End();
 	}
+#endif // !MRE
 
 	void swap_textures(unsigned short a, unsigned short b) {
 		unsigned short tmp[16 * 16];
@@ -162,8 +168,8 @@ namespace BlockPalette {
 			return tmp;
 		else
 		{
-			if (min_n_use == 256)
-				throw 1;
+			//if (min_n_use == 256)
+			//	throw 1;
 
 			unsigned short new_id_s = min_n_use++;
 

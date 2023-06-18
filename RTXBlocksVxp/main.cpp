@@ -1,34 +1,44 @@
 #include "main.h"
+#include "../RTXBlocks/Sock.h"
+#include "../RTXBlocks/Protocol.h"
+#include "../RTXBlocks/PacketMaker.h"
+#include "../RTXBlocks/PacketOpener.h"
+#include "../RTXBlocks/World.h"
+#include "../RTXBlocks/Render.h"
+#include "../RTXBlocks/BlockPalette.h"
+#include "../RTXBlocks/PlayerInfo.h"
+#include "../RTXBlocks/Player.h"
+#include "../RTXBlocks/Time.h"
+#include "../RTXBlocks/Chat.h"
 #include "../RTXBlocks/Keyboard.h"
-//#include "Sock.h"
-//#include "Protocol.h"
-//#include "PacketMaker.h"
-//#include "PacketOpener.h"
 
 int scr_w = 0, scr_h =0; //screen width and height
 VMUINT8 *layer_bufs[2] = {0,0};
 VMINT layer_hdls[2] = {-1,-1};
+
+int render_c = 0;
 
 void handle_sysevt(VMINT message, VMINT param);
 void handle_keyevt(VMINT event, VMINT keycode);
 
 void init_all(){
 	Keyboard::init();
-	//Sock::init();
-	//Protocol::init();
-	//PacketMaker::init();
-	//PacketOpener::init();
+	Sock::init();
+	Protocol::init();
+	PacketMaker::init();
+	PacketOpener::init();
+	World::init();
 }
 
 void deinit_all(){
-	//Sock::deinit();
-	//Protocol::deinit();//
-	//PacketMaker::deinit();
-	//PacketOpener::deinit();
+	Sock::deinit();
+	//Protocol::deinit();
+	PacketMaker::deinit();
+	PacketOpener::deinit();
 }
 
 void temp_timer(int tid){
-	//Protocol::update();
+	Protocol::update();
 }
 
 void vm_main(void){
@@ -39,7 +49,7 @@ void vm_main(void){
 
 	init_all();
 
-	//Protocol::connect();
+	Protocol::connect();
 	
 	vm_reg_sysevt_callback(handle_sysevt);
 	vm_reg_keyboard_callback(handle_keyevt);

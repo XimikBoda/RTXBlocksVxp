@@ -1,11 +1,16 @@
 #include "Time.h"
-#include <imgui.h>
 #include <stdio.h>
+#ifndef MRE
 #include <time.h>
+#include <imgui.h>
+#else
+#include "vmsys.h"
+#endif // !MRE
 static long long World_Age = 0;
 static long long Time_of_day = 0;
 namespace Time
 {
+#ifndef MRE
 	void draw_ImGui() {
 		if (ImGui::Begin("Time")) {
 			ImGui::Text("World Age: %lld", World_Age);
@@ -16,6 +21,7 @@ namespace Time
 		}
 		ImGui::End();
 	}
+#endif // !MRE
 
 	char* get_time_in_str() {
 		static char str[20];
@@ -39,8 +45,14 @@ namespace Time
 		return World_Age;
 	}
 	long long get_time_1970() {
+#ifndef MRE
 		time_t ltime;
 		time(&ltime);
+#else
+		VMUINT ltime = 0;
+		vm_get_utc(&ltime);
+#endif // !MRE
+		 
 		//printf("Current local time as unix timestamp: %li\n", ltime);
 
 		//struct tm* timeinfo = gmtime(&ltime); /* Convert to UTC */

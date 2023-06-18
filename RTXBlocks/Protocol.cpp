@@ -26,10 +26,8 @@ extern int udp_in_buf_pos, udp_out_buf_pos;
 const char* r_ip = "127.0.0.1";
 unsigned short r_tcp_port = 25501;
 unsigned short r_udp_port = 25502;
-//const char* s_ip = "127.0.0.1";
-//unsigned short s_port = 25565;
-const char* s_ip = "Shadow_006.aternos.me";
-unsigned short s_port = 51758;
+const char* s_ip = "127.0.0.1";
+unsigned short s_port = 25565;
 const char* Nickname = "RTX";
 int my_id = -1;
 
@@ -101,8 +99,9 @@ namespace Protocol
 			{
 
 				PacketOpener::read_UUID(&my_uuid);
-
+#ifndef MRE
 				printf(my_uuid.get_string());
+#endif // !MRE
 
 				play = true;
 
@@ -281,7 +280,10 @@ namespace Protocol
 				player.acs = 0;
 				tp_ip = PacketOpener::read_VarInt();
 				dv = PacketOpener::read_bool();
+#ifndef MRE
 				printf("coreection\n");
+#endif // !MRE
+				
 				{
 					PacketMaker::start(0x00);
 					PacketMaker::add_VarInt(tp_ip);

@@ -1,7 +1,9 @@
 #pragma once
+#ifndef MRE
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#endif // !MRE
 
 #define WORLD_X_M 3
 #define WORLD_Z_M 3
@@ -28,6 +30,8 @@ namespace World {
 	unsigned short get_block_l(int x, int y, int z);
 	//void set_center_chunk_y();
 	void ImGui_draw();
+#ifndef MRE
 	void test_draw(sf::Texture& temp_preview, sf::RenderWindow& window);
+#endif // !MRE
 	void load_chunck_section(int x, int y, int z, unsigned short *a);
 }
