@@ -31,6 +31,7 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketOpener.cpp -o $(CURDIR)\arm\PacketOpener.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\World.cpp -o $(CURDIR)\arm\World.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Render.cpp -o $(CURDIR)\arm\Render.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Log.cpp -o $(CURDIR)\arm\Log.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\BlockPalette.cpp -o $(CURDIR)\arm\BlockPalette.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PlayerInfo.cpp -o $(CURDIR)\arm\PlayerInfo.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Player.cpp -o $(CURDIR)\arm\Player.o
@@ -40,7 +41,7 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Keyboard.cpp -o $(CURDIR)\arm\Keyboard.o
 
 #	Link app
-	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(CURDIR)\arm\Render.o $(LINK_LIB) $(LINK_PARAM)
+	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(CURDIR)\arm\Render.o $(CURDIR)\arm\Log.o $(LINK_LIB) $(LINK_PARAM)
 
 #	Pack resource to app 
 	"$(MRE_SDK)\tools\ResEditor\CmdShell.exe" pack -silent -resolution 240x320 -o "$(CURDIR)\$(PROJECT_NAME).pkd" -e AXF "$(CURDIR)\$(PROJECT_NAME).vcproj" "$(CURDIR)\$(PROJECT_NAME).axf"

@@ -11,6 +11,7 @@
 #include "../RTXBlocks/Time.h"
 #include "../RTXBlocks/Chat.h"
 #include "../RTXBlocks/Keyboard.h"
+#include "Log.h"
 
 int scr_w = 0, scr_h =0; //screen width and height
 VMUINT8 *layer_bufs[2] = {0,0};
@@ -22,6 +23,7 @@ void handle_sysevt(VMINT message, VMINT param);
 void handle_keyevt(VMINT event, VMINT keycode);
 
 void init_all(){
+	Log::init();
 	BlockPalette::init();
 	Keyboard::init();
 	Sock::init();
@@ -49,6 +51,8 @@ void main_timer(int tid){
 	Protocol::update();
 	Player::update(d_time);
 	Render::main_render();
+	extern unsigned char* world;
+	//memcpy(layer_bufs[0], world, 320*240*2);
 	Keyboard::update();
 	vm_graphic_flush_layer(layer_hdls, 1);
 }

@@ -54,12 +54,14 @@ namespace BlockPalette {
 		big_palletre = (unsigned short*)malloc(512 * sizeof(unsigned short));
 
 		use[0] = true;
-		big_palletre[0] = 0;
 
-		for (int i = 0; i < 256; ++i)
+		for (int i = 0; i < 256; ++i) 
 			small_palletre[i] = i;
+		
+		for (int i = 1; i < 256; ++i)
+			use[i] = false;
 
-		for (int i = 1; i < 512; ++i)
+		for (int i = 0; i < 512; ++i)
 			big_palletre[i] = i;
 	}
 	void deinit() {
@@ -183,15 +185,15 @@ namespace BlockPalette {
 			return tmp;
 		else
 		{
-			//if (min_n_use == 256)
-			//	throw 1;
+			if (min_n_use == 256)
+				return 0;
 
 			unsigned short new_id_s = min_n_use++;
 
 			unsigned short new_id = small_palletre[new_id_s];
 
-			swap(big_palletre[id], big_palletre[new_id]);
-			swap_textures(big_palletre[id], big_palletre[new_id]);
+			//swap(big_palletre[id], big_palletre[new_id]);
+			//swap_textures(big_palletre[id], big_palletre[new_id]);
 
 			small_palletre[new_id_s] = id;
 			if(tmp<256)

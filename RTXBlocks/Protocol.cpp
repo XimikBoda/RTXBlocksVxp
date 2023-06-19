@@ -11,6 +11,11 @@
 #include "main.h"
 #include <cstdlib>
 #include "string.h"
+#ifdef MRE
+#include "../RTXBlocksVxp/Log.h"
+#endif // MRE
+
+
 
 extern bool sock_is_conected;
 extern unsigned char* tcp_in_buf, * tcp_out_buf;
@@ -70,7 +75,8 @@ namespace Protocol
 			int size_size = 0;
 			int size = PacketOpener::read_VarInt_by_adress(tcp_in_buf + i, &size_size);
 			if (size_size + size + i <= tcp_in_buf_pos) {
-				open_packet(PacketOpener::open(tcp_in_buf + i, size, size_size));
+				int id = PacketOpener::open(tcp_in_buf + i, size, size_size);
+				open_packet(id);
 
 				i += size_size + size;
 			}

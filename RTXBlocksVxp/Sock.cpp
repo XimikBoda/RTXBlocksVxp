@@ -59,7 +59,7 @@ namespace Sock
 
 	void tcp_update(){
 		if(tcp_handle>=0){
-			int rec = vm_tcp_read(tcp_handle, tcp_in_buf + tcp_in_buf_pos, tcp_in_buf_size - tcp_in_buf_pos-100);
+			int rec = vm_tcp_read(tcp_handle, tcp_in_buf + tcp_in_buf_pos, tcp_in_buf_size - tcp_in_buf_pos);
 			if(rec<0)
 				show_error_and_exit("Tcp reed error");
 			if(rec>0)

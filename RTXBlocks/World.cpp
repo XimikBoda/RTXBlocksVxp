@@ -29,7 +29,7 @@ extern Player_s player;
 
 namespace World {
 	void init(){
-		world = (unsigned char*)malloc((WORLD__R_S_X*WORLD__R_S_Z*WORLD__R_S_Y)*2);
+		world = (unsigned char*)malloc((WORLD__R_S_X*WORLD__R_S_Z*WORLD__R_S_Y));
 		for (int i = 0; i < WORLD__R_S_X * WORLD__R_S_Z * WORLD__R_S_Y; ++i)
 			world[i] = 0;
 	}
@@ -153,10 +153,10 @@ namespace World {
 		cy -= start_chunk_y;
 		cz -= start_chunk_z;
 
-		int count = 0;
-		for (int i = 0; i < 16 * 16 * 16; ++i)
-			if (a[i])
-				count++;
+		//int count = 0;
+		//for (int i = 0; i < 16 * 16 * 16; ++i)
+		//	if (a[i])
+		//		count++;
 
 		//printf("cx = %d, cy = %d, cz = %d ==========  %d\n\n", cx, cy, cz, count);
 
@@ -164,13 +164,16 @@ namespace World {
 		cy *= 16;
 		cz *= 16;
 
+		unsigned short tmp[16 * 16 * 16] = {};
+		memcpy(tmp, a, 16 * 16 * 16);
+
 		for (int x = 0; x < 16; ++x)
 			for (int z = 0; z < 16; ++z)
 				for (int y = 0; y < 16; ++y) {
 					/*if(cz<4)
 						world[(cx + x) + ((cz + z) << 7) + ((cy + y) << 14)] = 0xFF & a[x + z * 16 + (15 - y) * 16 * 16];
 					else*/
-					world[(cx + x) + ((cz + z) << WORLD_Z_SH) + ((cy + y) << WORLD_Y_SH)] = BlockPalette::get_block_id(a[x + z * 16 + y * 16 * 16]);
+					world[(cx + x) + ((cz + z) << WORLD_Z_SH) + ((cy + y) << WORLD_Y_SH)] = BlockPalette::get_block_id(tmp[x + z * 16 + y * 16 * 16]);
 					//printf("%d\n", BlockPalette::get_block_id(a[x + z * 16 + y * 16 * 16]));
 				}
 	}

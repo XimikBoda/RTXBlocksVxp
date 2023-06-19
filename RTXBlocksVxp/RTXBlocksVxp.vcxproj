@@ -176,6 +176,7 @@
     <ClCompile Include="..\RTXBlocks\UUID.cpp" />
     <ClCompile Include="..\RTXBlocks\World.cpp" />
     <ClCompile Include="c_fix.c" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Sock.cpp" />
@@ -186,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\RTXBlocks\Keyboard.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

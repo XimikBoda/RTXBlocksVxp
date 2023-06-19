@@ -8,6 +8,7 @@
 #include"vmsys.h"
 #define malloc vm_malloc
 #define free vm_free
+#include "../RTXBlocksVxp/Log.h"
 #endif // !MRE
 
 static const int SEGMENT_BITS = 0x7F;
@@ -57,10 +58,19 @@ namespace PacketOpener
 		if (cur_id == 0x1F) {
 			mz_ulong dest_len= buf_max_size;
 			if (mz_uncompress(buf, &dest_len, a + size_size + size_id, size - size_id))
-				printf("wrong");
+#ifdef MRE
+				LOG_M("Uncompress error")
+#else
+				printf("Uncompress error");
+#endif // MRE
+
+				
+			
+				//printf("wrong");
 		}
 		else
-			memcpy(buf, a + size_size + size_id, size - size_id);
+			if(size>= size_id)
+				memcpy(buf, a + size_size + size_id, size - size_id);
 		//}
 		return cur_id;
 	}
