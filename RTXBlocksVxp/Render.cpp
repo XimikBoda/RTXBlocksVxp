@@ -72,7 +72,8 @@ namespace Render {
 			camera.z = player.z;// -start_chunk_z * 16;
 			camera.a = player.a + 0.1;
 			camera.b = player.b + 0.1;
-			//camera.c = player.c;
+			camera.c = pi / 2;
+			camera.f = 30;
 		}
 		{
 			float L = 3;

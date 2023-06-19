@@ -192,8 +192,8 @@ namespace BlockPalette {
 
 			unsigned short new_id = small_palletre[new_id_s];
 
-			//swap(big_palletre[id], big_palletre[new_id]);
-			//swap_textures(big_palletre[id], big_palletre[new_id]);
+			swap(big_palletre[id], big_palletre[new_id]);
+			swap_textures(big_palletre[id], big_palletre[new_id]);
 
 			small_palletre[new_id_s] = id;
 			if(tmp<256)

@@ -29,7 +29,7 @@ extern Player_s player;
 
 namespace World {
 	void init(){
-		world = (unsigned char*)malloc((WORLD__R_S_X*WORLD__R_S_Z*WORLD__R_S_Y));
+		world = (unsigned char*)malloc((WORLD__R_S_X*WORLD__R_S_Z*WORLD__R_S_Y)*2);
 		for (int i = 0; i < WORLD__R_S_X * WORLD__R_S_Z * WORLD__R_S_Y; ++i)
 			world[i] = 0;
 	}
@@ -165,7 +165,7 @@ namespace World {
 		cz *= 16;
 
 		unsigned short tmp[16 * 16 * 16] = {};
-		memcpy(tmp, a, 16 * 16 * 16);
+		memcpy(tmp, a, 16 * 16 * 16 * 2);
 
 		for (int x = 0; x < 16; ++x)
 			for (int z = 0; z < 16; ++z)
