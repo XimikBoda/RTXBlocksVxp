@@ -29,7 +29,7 @@ extern Player_s player;
 
 namespace World {
 	void init(){
-		world = (unsigned char*)malloc((WORLD__R_S_X*WORLD__R_S_Z*WORLD__R_S_Y)*2);
+		world = (unsigned char*)malloc((WORLD__R_S_X*WORLD__R_S_Z*WORLD__R_S_Y));
 		for (int i = 0; i < WORLD__R_S_X * WORLD__R_S_Z * WORLD__R_S_Y; ++i)
 			world[i] = 0;
 	}

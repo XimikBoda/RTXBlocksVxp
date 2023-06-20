@@ -20,6 +20,10 @@ extern int start_chunk_y;
 
 extern bool play;
 
+extern int render_c;
+
+bool sup_pos = 0;
+
 float player_h = 1.8;
 
 const float jump_acs = 5.4f;
@@ -138,6 +142,8 @@ namespace Player
 		if (Keyboard::click(VM_KEY_NUM1))
 			player.zoom = !player.zoom;
 
+		if (Keyboard::click(VM_KEY_NUM3))
+			sup_pos = !sup_pos;
 
 		//if (keyclick(VM_KEY_NUM7))
 		//	player.sit = !player.sit;
@@ -164,38 +170,40 @@ namespace Player
 		if (Keyboard::pres(VM_KEY_RIGHT))
 			player.a += rot_sp * d_time / 1000.f;
 
-		/*if (player.acs < 0) {
-			float player_new_y = player.y + player.acs * d_time / 1000.f;
+		if (sup_pos) {
+			if (player.acs < 0) {
+				float player_new_y = player.y + player.acs * d_time / 1000.f;
 
-			if (check_ground(player.x, player_new_y, player.z)) {
-				player.y = 1 + (int)player_new_y;
-				//player.acs = 0;
+				if (check_ground(player.x, player_new_y, player.z)) {
+					player.y = 1 + (int)player_new_y;
+					//player.acs = 0;
+					player.on_ground = true;
+				}
+				else
+					player.y = player_new_y;
+			}
+			if (drob(player.y) > 0.95 && check_ground(player.x, player.y, player.z))
+				player.y = int(player.y) + 1;
+
+			if (check_ground(player.x, player.y - 0.95f, player.z) && drob(player.y) < 0.1) {
+				player.y = int(player.y);
 				player.on_ground = true;
 			}
 			else
-				player.y = player_new_y;
-		}
-		if (drob(player.y) > 0.95 && check_ground(player.x, player.y, player.z))
-			player.y = int(player.y) + 1;
+				player.on_ground = false;
 
-		if (check_ground(player.x, player.y - 0.95f, player.z) && drob(player.y) < 0.1) {
-			player.y = int(player.y);
-			player.on_ground = true;
+			if (player.on_ground) {
+				player.acs = 0;
+				if (Keyboard::click(VM_KEY_OK) || Keyboard::click(VM_KEY_NUM5))
+					player.acs = jump_acs;
+			}
+			else
+				player.acs -= 9.8 * d_time / 1000.f;
 		}
-		else
-			player.on_ground = false;
-
-		if (player.on_ground) {
-			player.acs = 0;
-			if (Keyboard::click(VM_KEY_OK) || Keyboard::click(VM_KEY_NUM5))
-				player.acs = jump_acs;
-		}
-		else
-			player.acs -= 9.8 * d_time / 1000.f;
-			*/
+			
 		
 
-		char forward = 0, rigth = 0;
+		int forward = 0, rigth = 0;
 
 		if (Keyboard::pres(VM_KEY_NUM2))
 			forward += 1;
@@ -254,25 +262,27 @@ namespace Player
 
 		}
 
-		//if (player.acs > 0) {
-		//	float player_new_y = player.y + player.acs * d_time / 1000.f;
+		if (player.acs > 0) {
+			float player_new_y = player.y + player.acs * d_time / 1000.f;
 
-		//	if (check_ground(player.x, player_new_y + 1, player.z)) {
-		//		player.y = (float)((int)player_new_y) + 2.f - player_h;
-		//		//player.acs = 0;
-		//		player.on_ground = false;
-		//	}
-		//	else
-		//		player.y = player_new_y;
-		//}
+			if (check_ground(player.x, player_new_y + 1, player.z)) {
+				player.y = (float)((int)player_new_y) + 2.f - player_h;
+				//player.acs = 0;
+				player.on_ground = false;
+			}
+			else
+				player.y = player_new_y;
+		}
 
 		if (change_rotation) {
 			Protocol::Set_Player_Rotation();
 			change_rotation = false;
+			render_c = 1;
 		}
 		if (change_position) {
 			Protocol::Set_Player_Position();
 			change_position = false;
+			render_c = 1;
 		}
 	}
 };
