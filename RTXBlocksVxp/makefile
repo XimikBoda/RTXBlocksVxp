@@ -30,7 +30,7 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketMaker.cpp -o $(CURDIR)\arm\PacketMaker.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketOpener.cpp -o $(CURDIR)\arm\PacketOpener.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\World.cpp -o $(CURDIR)\arm\World.o
-	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Render.cpp -o $(CURDIR)\arm\Render.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Render.cpp -o $(CURDIR)\arm\Render.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Log.cpp -o $(CURDIR)\arm\Log.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\BlockPalette.cpp -o $(CURDIR)\arm\BlockPalette.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PlayerInfo.cpp -o $(CURDIR)\arm\PlayerInfo.o
@@ -47,7 +47,7 @@ build:
 	"$(MRE_SDK)\tools\ResEditor\CmdShell.exe" pack -silent -resolution 240x320 -o "$(CURDIR)\$(PROJECT_NAME).pkd" -e AXF "$(CURDIR)\$(PROJECT_NAME).vcproj" "$(CURDIR)\$(PROJECT_NAME).axf"
 
 #	Add tag infromation 
-	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" $(APP_NAME) "0.1.0" $(AUTHOR) "2500" "NotSupportBg" "Not Support rotate" $(APP_NAME) $(APP_NAME) $(APP_NAME) "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng Audio Call Camera File HTTP SIM card Record SMS(SP) LBS ProMng Video XML Sec SysStorage Payment BT PUSH UDP SysFile sso" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
+	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" $(APP_NAME) "0.1.0" $(AUTHOR) "3000" "NotSupportBg" "Not Support rotate" $(APP_NAME) $(APP_NAME) $(APP_NAME) "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng Audio Call Camera File HTTP SIM card Record SMS(SP) LBS ProMng Video XML Sec SysStorage Payment BT PUSH UDP SysFile sso" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
 
 
 #copy /y RTXBlocksVxp.vxp "G:\mre\271670312.vxp"

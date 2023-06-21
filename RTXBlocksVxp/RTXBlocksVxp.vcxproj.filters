@@ -60,10 +60,10 @@
     <ClCompile Include="..\RTXBlocks\BlockPalette.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Render.cpp">
+    <ClCompile Include="Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Log.cpp">
+    <ClCompile Include="..\RTXBlocks\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

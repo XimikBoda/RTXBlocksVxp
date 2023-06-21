@@ -12,10 +12,14 @@
 #include "../RTXBlocks/Chat.h"
 #include "../RTXBlocks/Keyboard.h"
 #include "Log.h"
+//#include "../RTXBlocks/Profont6x11.h"
 
 int scr_w = 0, scr_h =0; //screen width and height
-VMUINT8 *layer_bufs[2] = {0,0};
+VMUINT16 *layer_bufs[2] = {0,0};
 VMINT layer_hdls[2] = {-1,-1};
+
+extern unsigned int tcp_in_statistic, tcp_out_statistic;
+extern unsigned int udp_in_statistic, udp_out_statistic;
 
 int render_c = 0;
 
@@ -47,14 +51,25 @@ void main_timer(int tid){
 	if (d_time > 200)
 		d_time = 200;
 
+	Render::clear_to_transparent_color(layer_bufs[1]);
 
 	Protocol::update();
 	Player::update(d_time);
 	Render::main_render();
-	extern unsigned char* world;
-	//memcpy(layer_bufs[0], world, 320*240*2);
 	Keyboard::update();
-	vm_graphic_flush_layer(layer_hdls, 1);
+
+	{
+		char tmp[300];
+		//sprintf(tmp, "Fps: %.1f, dt: %d", (d_time? 1000.f / float(d_time): NAN), d_time);
+		sprintf(tmp, "Fps: %d, dt: %d", (d_time ? 1000 / d_time : 0), d_time);
+		Render::draw_text_white(layer_bufs[1], 0, 0 , tmp);
+
+		sprintf(tmp, "TCP i/o: %dKB/%dKB, UDP i/o: %dKB/%dKB", tcp_in_statistic / 1024, tcp_out_statistic / 1024, 
+			udp_in_statistic / 1024, udp_out_statistic / 1024);
+		Render::draw_text_white(layer_bufs[1], 0, 11, tmp);
+	}
+
+	vm_graphic_flush_layer(layer_hdls, 2);
 }
 
 void read_from_file_to_addr(const char* path, void ** addr) {
@@ -103,12 +118,12 @@ void handle_sysevt(VMINT message, VMINT param) {
 	case VM_MSG_CREATE:
 	case VM_MSG_ACTIVE:
 		layer_hdls[0] = vm_graphic_create_layer(0, 0, scr_w, scr_h, -1);
-		//layer_hdls[1] = vm_graphic_create_layer(0, 0, scr_w, scr_h, tr_color);
+		layer_hdls[1] = vm_graphic_create_layer(0, 0, scr_w, scr_h, tr_color);
 		
 		vm_graphic_set_clip(0, 0, scr_w, scr_h);
 
-		layer_bufs[0]=vm_graphic_get_layer_buffer(layer_hdls[0]);
-		//layer_bufs[1]=vm_graphic_get_layer_buffer(layer_hdls[1]);
+		layer_bufs[0] = (VMUINT16*)vm_graphic_get_layer_buffer(layer_hdls[0]);
+		layer_bufs[1] = (VMUINT16*)vm_graphic_get_layer_buffer(layer_hdls[1]);
 
 		vm_kbd_set_mode(VM_KEYPAD_2KEY_NUMBER);
 
@@ -131,7 +146,7 @@ void handle_sysevt(VMINT message, VMINT param) {
 		break;	
 	case VM_MSG_QUIT:
 		if( layer_hdls[0] != -1 ){
-			//vm_graphic_delete_layer(layer_hdls[1]);
+			vm_graphic_delete_layer(layer_hdls[1]);
 			vm_graphic_delete_layer(layer_hdls[0]);
 		}
 		deinit_all();

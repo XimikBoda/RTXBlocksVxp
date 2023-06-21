@@ -172,13 +172,13 @@
     <ClCompile Include="..\RTXBlocks\Player.cpp" />
     <ClCompile Include="..\RTXBlocks\PlayerInfo.cpp" />
     <ClCompile Include="..\RTXBlocks\Protocol.cpp" />
+    <ClCompile Include="..\RTXBlocks\Render.cpp" />
     <ClCompile Include="..\RTXBlocks\Time.cpp" />
     <ClCompile Include="..\RTXBlocks\UUID.cpp" />
     <ClCompile Include="..\RTXBlocks\World.cpp" />
     <ClCompile Include="c_fix.c" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Render.cpp" />
     <ClCompile Include="Sock.cpp" />
   </ItemGroup>
   <ItemGroup>
