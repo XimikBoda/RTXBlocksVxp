@@ -6,7 +6,7 @@
 UUID my_uuid;
 
 static player_info temp[100];
-static int player_info_count=0;
+static int player_info_count = 0;
 
 namespace PlayerInfo
 {
@@ -30,14 +30,20 @@ namespace PlayerInfo
 	void get_make_null_as_pl() {
 		player_info_count++;
 	}
-	player_info* get_find_by_uuid(UUID*uuid) {
+	player_info* get_find_by_uuid(UUID* uuid) {
 		for (int i = 0; i < player_info_count; ++i)
-			if(temp[i].uuid==*uuid)
+			if (temp[i].uuid == *uuid)
 				return &temp[i];
 		return 0;
 	}
 	void delete_by_uuid(UUID* uuid) {
-		temp[player_info_count];
+		for (int i = 0; i < player_info_count; ++i)
+			if (temp[i].uuid == *uuid) {
+				for (int j = i; j < player_info_count - 1; ++j)
+					temp[j] = temp[j + 1];
+				player_info_count--;
+				break;
+			}
 	}
 };
 

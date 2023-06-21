@@ -68,6 +68,10 @@ void main_timer(int tid){
 			udp_in_statistic / 1024, udp_out_statistic / 1024);
 		Render::draw_text_white(layer_bufs[1], 0, 11, tmp);
 	}
+	extern unsigned short* blocks;
+	Render::texture_triangle_rasterezation(layer_bufs[1], blocks + (16 * 16), 16,
+		10, 10, 200, 50, 50, 200,
+		0, 0, 16, 0, 0, 16);
 
 	vm_graphic_flush_layer(layer_hdls, 2);
 }

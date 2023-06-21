@@ -27,6 +27,7 @@
 #include "Time.h"
 #include "Chat.h"
 #include "Keyboard.h"
+#include "Entity.h"
 
 const float pi = M_PI;
 
@@ -149,6 +150,7 @@ int main() {
 		Time::draw_ImGui();
 		Chat::draw_ImGui();
 		Player::ImGui_draw();
+		Entity::imgui_draw();
 
 		if(ImGui::Begin("Main")){
 			ImGui::Text("Delta time = %d", d_time);

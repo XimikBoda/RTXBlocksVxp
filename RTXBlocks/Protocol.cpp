@@ -7,6 +7,7 @@
 #include "Sock.h"
 #include "Time.h"
 #include "Chat.h"
+#include "Entity.h"
 #include "UUID.h"
 #include "main.h"
 #include <cstdlib>
@@ -133,6 +134,104 @@ namespace Protocol
 		}
 		else {
 			switch (id) {
+			case 0x00:
+			{
+				entity& tmp = *Entity::get_null();
+
+				tmp.id = PacketOpener::read_VarInt();
+				PacketOpener::read_UUID(&tmp.uuid);
+				tmp.type = PacketOpener::read_VarInt();
+				tmp.x = PacketOpener::read_double();
+				tmp.y = PacketOpener::read_double();
+				tmp.z = PacketOpener::read_double();
+				tmp.yaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				tmp.pitch = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				tmp.hyaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				tmp.data = PacketOpener::read_VarInt();
+				tmp.vx = PacketOpener::read_short();
+				tmp.vy = PacketOpener::read_short();
+				tmp.vz = PacketOpener::read_short();
+				tmp.is_player = false;
+				Entity::get_make_null_as_entity();
+			}
+			break;
+			case 0x02:
+			{
+				entity& tmp = *Entity::get_null();
+
+				tmp.id = PacketOpener::read_VarInt();
+				PacketOpener::read_UUID(&tmp.uuid);
+				tmp.x = PacketOpener::read_double();
+				tmp.y = PacketOpener::read_double();
+				tmp.z = PacketOpener::read_double();
+				tmp.yaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				tmp.pitch = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				tmp.is_player = true;
+				Entity::get_make_null_as_entity();
+			}
+			break;
+			case 0x63: {
+				int eid = PacketOpener::read_VarInt();
+				entity* ent_p = Entity::get_find_by_id(eid);
+				if (!ent_p)
+					break;
+				entity& ent = *ent_p;
+				ent.x = PacketOpener::read_double();
+				ent.y = PacketOpener::read_double();
+				ent.z = PacketOpener::read_double();
+				ent.yaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				ent.pitch = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				ent.is_ground = PacketOpener::read_bool();
+
+			}break;
+			case 0x26: {
+				int eid = PacketOpener::read_VarInt();
+				entity* ent_p = Entity::get_find_by_id(eid);
+				if (!ent_p)
+					break;
+				entity& ent = *ent_p;
+				ent.x += double(PacketOpener::read_short()) / 2096.;
+				ent.y += double(PacketOpener::read_short()) / 2096.;
+				ent.z += double(PacketOpener::read_short()) / 2096.;
+			}break;
+			case 0x27: {
+				int eid = PacketOpener::read_VarInt();
+				entity* ent_p = Entity::get_find_by_id(eid);
+				if (!ent_p)
+					break;
+				entity& ent = *ent_p;
+				ent.x += double(PacketOpener::read_short()) / 2096.;
+				ent.y += double(PacketOpener::read_short()) / 2096.;
+				ent.z += double(PacketOpener::read_short()) / 2096.;
+				ent.yaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				ent.pitch = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				ent.is_ground = PacketOpener::read_bool();
+			}break;
+			case 0x28: {
+				int eid = PacketOpener::read_VarInt();
+				entity* ent_p = Entity::get_find_by_id(eid);
+				if (!ent_p)
+					break;
+				entity& ent = *ent_p;
+				ent.yaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				ent.pitch = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+				ent.is_ground = PacketOpener::read_bool();
+			}break;
+			case 0x3C: {
+				int eid = PacketOpener::read_VarInt();
+				entity* ent_p = Entity::get_find_by_id(eid);
+				if (!ent_p)
+					break;
+				entity& ent = *ent_p;
+				ent.hyaw = (float)(PacketOpener::read_byte()) / 255.f * 360.f;
+			}break;
+			case 0x38: {
+				int count = PacketOpener::read_VarInt();
+				for (int i = 0; i < count; ++i) {
+					int eid = PacketOpener::read_VarInt();
+					Entity::delete_by_id(eid);
+				}
+			}break;
 			case 0x09:
 			{
 				unsigned long long val = PacketOpener::read_long();
@@ -293,7 +392,7 @@ namespace Protocol
 #ifndef MRE
 				printf("coreection\n");
 #endif // !MRE
-				
+
 				{
 					PacketMaker::start(0x00);
 					PacketMaker::add_VarInt(tp_ip);
@@ -308,8 +407,8 @@ namespace Protocol
 			{
 				int x = PacketOpener::read_VarInt();
 				int z = PacketOpener::read_VarInt();
-				if(pl_nrm)
-					World::set_center_chunk(start_chunk_x+int(player.x) / 16, start_chunk_z + int(player.z) / 16, start_chunk_y + int(player.y) / 16);
+				if (pl_nrm)
+					World::set_center_chunk(start_chunk_x + int(player.x) / 16, start_chunk_z + int(player.z) / 16, start_chunk_y + int(player.y) / 16);
 				//World::set_center_chunk(x, z, center_chunk_y);
 			}
 			break;
@@ -338,7 +437,7 @@ namespace Protocol
 			}
 			break;
 
-			} 
+			}
 		}
 	}
 
