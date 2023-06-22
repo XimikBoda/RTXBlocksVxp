@@ -118,17 +118,59 @@ namespace Render {
 	float len(float x1, float y1, float x2, float y2) {
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	}
+	float len(float x1, float y1, float z1, float x2, float y2, float z2) {
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
+	}
+	float len(const vector3f& v1, const vector3f& v2) {
+		return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z);
+	}
+	float len(const vector3f& v) {
+		return v.x * v.x + v.y * v.y + v.z * v.z;
+	}
 
 	void swap(float& a, float& b) {
 		float c = a;
 		a = b;
 		b = c;
 	}
+	void swap(int_fixed& a, int_fixed& b) {
+		int_fixed c = a;
+		a = b;
+		b = c;
+	}
 
-	void texture_triangle_rasterezation(unsigned short* scr_buf, unsigned short* texture_buf, int t_w, float x1, float y1, float x2, float y2, float x3, float y3, float tx1, float ty1, float tx2, float ty2, float tx3, float ty3) {
+	vertex2fd get2d(const vertex3f point, const camera_cache camera_c) {
+		vertex2fd res;
+		vector3f vec = { point.x - camera_c.pos.x, point.y - camera_c.pos.y, point.z - camera_c.pos.z };
+		float k = camera_c.L * camera_c.L / (vec.x * camera_c.cn.x + vec.y * camera_c.cn.y + vec.z * camera_c.cn.z);
+		float xonp = vec.x * k, yonp = vec.y * k;
+		res.x = -(camera_c.cnh.x * (yonp - camera_c.cn.y) - camera_c.cnh.y * (xonp - camera_c.cn.x))
+			/ (camera_c.cnw.y * camera_c.cnh.x - camera_c.cnw.x * camera_c.cnh.y);
+		res.y = (yonp - camera_c.cn.y - camera_c.cnw.y * res.x) / camera_c.cnh.y / camera_c.nh;
+		res.x /= camera_c.nw;
+		res.x = (res.x + 1.f) * float(s_w / 2);
+		res.y = (res.y + 1.f) * float(s_h / 2);
+		res.d = MAKE_FLOAT_FIXED(len(vec)) * (k < 0 ? -1 : 1);
+		return res;
+	}
+
+	void get_a_b_l(float nxt, float nyt, float nzt, float cx, float cy, float cz, float cwx, float cwy, float cwz, float chx, float chy, float chz, float nw, float nh, float& aa, float& bb, float& l) {
+		float k = (cx * cx + cy * cy + cz * cz) / (nxt * cx + nyt * cy + nzt * cz);
+		float xonp = nxt * k, yonp = nyt * k, zonp = nzt * k;
+		aa = -(chx * (yonp - cy) - chy * (xonp - cx)) / (cwy * chx - cwx * chy);
+		//bb = (cwx * (yonp - cy) - cwy * (xonp - cx)) / (chy * cwx - chx * cwy) / nh;
+		bb = (yonp - cy - cwy * aa) / chy / nh;
+		aa /= nw;
+		l = (nxt * nxt + nyt * nyt + nzt * nzt) * (k < 0 ? -1 : 1);
+	}
+
+	void texture_triangle_rasterezation(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, int t_w, vertex2fd v1, vertex2fd v2, vertex2fd v3, float tx1, float ty1, float tx2, float ty2, float tx3, float ty3) {
 		// 1--2
 		// | /
 		// 3
+
+		float x1 = v1.x, y1 = v1.y, x2 = v2.x, y2 = v2.y, x3 = v3.x, y3 = v3.y;
+		int_fixed d1 = v1.d, d2 = v2.d, d3 = v3.d;
 
 		float l12 = sqrt(len(x1, y1, x2, y2));
 		float l13 = sqrt(len(x1, y1, x3, y3));
@@ -136,12 +178,17 @@ namespace Render {
 		float maxy = l13 > l23 ? l13 : l23;
 		float maxx = l12;
 
+		if (maxy > 320 || maxx > 240)
+			return;
+
 		for (float ty = 0; ty < maxy; ++ty) {
 			float p = ty / maxy;
 			float x13 = p * (x3 - x1) + x1;
 			float y13 = p * (y3 - y1) + y1;
 			float x23 = p * (x3 - x2) + x2;
 			float y23 = p * (y3 - y2) + y2;
+			int_fixed d13 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d1)) + d1;
+			int_fixed d23 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d2)) + d2;
 
 			int rty = (ty3 - ty1) * p + ty1;
 			float rtmdx = (tx2 - tx1) * (1 - p);
@@ -149,13 +196,74 @@ namespace Render {
 			if (x13 > x23) {
 				swap(x13, x23);
 				swap(y13, y23);
+				swap(d13, d23);
 			}
 			for (float tx = 0; tx < maxxp; tx++) {
 				float px = tx / maxxp;
 				int rtx = px * rtmdx + tx1;
 				int sx = px * (x23 - x13) + x13;
 				int sy = px * (y23 - y13) + y13;
-				scr_buf[sx + s_w * sy] = texture_buf[rtx + t_w * rty];
+				int_fixed sd = FIXED_MULT(MAKE_FLOAT_FIXED(px), (d23 - d13)) + d13;
+				if (sd < 0)
+					continue;
+				int pos_in_buf = sx + s_w * sy;
+				if (pos_in_buf >= 0 && pos_in_buf < s_w * s_h && sx >= 0 && sx < s_w)
+					if (deep_buf[pos_in_buf] > sd) {
+						scr_buf[pos_in_buf] = texture_buf[rtx + t_w * rty];
+						pos_in_buf = sd;
+					}
+
+			}
+		}
+	}
+	void texture_triangle_rasterezation2(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, int t_w, vertex2fd v1, vertex2fd v2, vertex2fd v3, float tx1, float ty1, float tx2, float ty2, float tx3, float ty3) {
+		//    3
+		//  / |
+		// 1--2
+
+		float x1 = v1.x, y1 = v1.y, x2 = v2.x, y2 = v2.y, x3 = v3.x, y3 = v3.y;
+		int_fixed d1 = v1.d, d2 = v2.d, d3 = v3.d;
+
+		float l12 = sqrt(len(x1, y1, x2, y2));
+		float l13 = sqrt(len(x1, y1, x3, y3));
+		float l23 = sqrt(len(x2, y2, x3, y3));
+		float maxy = l13 > l23 ? l13 : l23;
+		float maxx = l12;
+
+		if (maxy > 320 || maxx > 240)
+			return;
+
+		for (float ty = 0; ty < maxy; ++ty) {
+			float p = ty / maxy;
+			float x13 = p * (x3 - x1) + x1;
+			float y13 = p * (y3 - y1) + y1;
+			float x23 = p * (x3 - x2) + x2;
+			float y23 = p * (y3 - y2) + y2;
+			int_fixed d13 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d1)) + d1;
+			int_fixed d23 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d2)) + d2;
+
+			int rty = (ty1 - ty3) * (1 - p) + ty3;
+			float rtmdx = (tx2 - tx1) * p;
+			float maxxp = maxx * (1 - p);
+			if (x13 > x23) {
+				swap(x13, x23);
+				swap(y13, y23);
+				swap(d13, d23);
+			}
+			for (float tx = 0; tx < maxxp; tx++) {
+				float px = tx / maxxp;
+				int rtx = px * (tx2 - rtmdx) + tx1 + rtmdx;
+				int sx = px * (x23 - x13) + x13;
+				int sy = px * (y23 - y13) + y13;
+				int_fixed sd = FIXED_MULT(MAKE_FLOAT_FIXED(px), (d23 - d13)) + d13;
+				if (sd < 0)
+					continue;
+				int pos_in_buf = sx + s_w * sy;
+				if (pos_in_buf >= 0 && pos_in_buf < s_w * s_h && sx >= 0 && sx < s_w)
+					if (deep_buf[pos_in_buf] > sd) {
+						scr_buf[pos_in_buf] = texture_buf[rtx + t_w * rty];
+						pos_in_buf = sd;
+					}
 			}
 		}
 	}
@@ -231,6 +339,8 @@ namespace Render {
 			int_fixed cam_f = MAKE_FLOAT_FIXED(camera.f / 255.f);
 
 			//printf("%d %d %d\n", nwf, nhf, Lf);
+
+			camera_cache camera_c = { {camera.x, camera.y, camera.z}, {nx1, ny1, nz1}, {nx2, ny2, nz2}, {nx3, ny3, nz3}, nw, nw / 3 * 4, L };
 
 			nhf = -nwf;
 			unsigned short* buf_i = &main_canvas_buff[0];
@@ -460,11 +570,45 @@ namespace Render {
 					b *= c_m;
 					buf_i[i] = VM_COLOR_888_TO_565(r, g, b);
 				}
+			}
+			{
+				float tx = 53, ty = 18, tz = 52;
+				vertex2fd v[4] =
 				{
-					texture_triangle_rasterezation(buf_i, blocks+(16*16), 16, 
-						10, 10, 200, 50, 50, 200, 
-						0, 0, 16, 0, 0, 16);
-				}
+					get2d({tx, ty, tz}, camera_c),
+					get2d({tx + 1, ty, tz}, camera_c),
+					get2d({tx, ty - 1, tz}, camera_c),
+					get2d({tx + 1, ty - 1, tz}, camera_c),
+				};
+				texture_triangle_rasterezation(buf_i, hbuf_i, blocks + (16 * 16) * 84, 16,
+					v[0], v[1], v[2],
+					0, 0, 16, 0, 0, 16);
+				texture_triangle_rasterezation2(buf_i, hbuf_i, blocks + (16 * 16) * 84, 16,
+					v[2], v[3], v[1],
+					0, 16, 16, 16, 16, 0);
+				/*float aa1 = 0, aa2 = 0, aa3 = 0, aa4 = 0, bb1 = 0, bb2 = 0, bb3 = 0, bb4 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0;
+				get_a_b_l(tx - camera.x, ty - camera.y, tz - camera.z,
+					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa1, bb1, l1);
+				get_a_b_l(tx - camera.x + 1, ty - camera.y, tz - camera.z,
+					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa2, bb2, l2);
+				get_a_b_l(tx - camera.x, ty - camera.y - 1, tz - camera.z,
+					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa3, bb3, l3);
+				get_a_b_l(tx - camera.x + 1, ty - camera.y - 1, tz - camera.z,
+					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa4, bb4, l4);
+				float sx1 = (aa1 + 1.f) * float(imw / 2);
+				float sy1 = (bb1 + 1.f) * float(imh / 2);
+				float sx2 = (aa2 + 1.f) * float(imw / 2);
+				float sy2 = (bb2 + 1.f) * float(imh / 2);
+				float sx3 = (aa3 + 1.f) * float(imw / 2);
+				float sy3 = (bb3 + 1.f) * float(imh / 2);
+				float sx4 = (aa4 + 1.f) * float(imw / 2);
+				float sy4 = (bb4 + 1.f) * float(imh / 2);
+				texture_triangle_rasterezation(buf_i, blocks + (16 * 16) * 84, 16,
+					{sx1, sy1}, { sx2, sy2 }, { sx3, sy3 },
+					0, 0, 16, 0, 0, 16);*/
+					//texture_triangle_rasterezation2(buf_i, blocks + (16 * 16) * 84, 16,
+					//	sx3, sy3, sx4, sy4, sx2, sy2,
+					//	0, 16, 16, 16, 16, 0);
 			}
 		}
 	}

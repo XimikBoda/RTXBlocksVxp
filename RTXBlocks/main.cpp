@@ -29,7 +29,11 @@
 #include "Keyboard.h"
 #include "Entity.h"
 
-const float pi = M_PI;
+//const float pi = M_PI;
+
+#define VM_COLOR_888_TO_565(r, g, b)	(((r & 0xf8) + ((g & 0xe0) >> 5)) << 8) + ((g & 0x1c) << 3) + (b >> 3)
+
+unsigned short* steve;
 
 typedef int int_fixed;
 
@@ -73,10 +77,12 @@ int main() {
 	blocks_.loadFromFile("terarian.png");
 	sf::Color* blocks = (sf::Color*)blocks_.getPixelsPtr();
 
-
-	sf::Image my_skin_;
-	my_skin_.loadFromFile("my_skin.png");
-	sf::Color* my_skin = (sf::Color*)my_skin_.getPixelsPtr();
+	/*{
+		sf::Image my_skin_;
+		my_skin_.loadFromFile("steve.png");
+		my_skin_.
+		sf::Color* my_skin = (sf::Color*)my_skin_.getPixelsPtr();
+	}*/
 
 	sf::Texture temp_preview;
 	temp_preview.loadFromFile("texture_previev1.png");
