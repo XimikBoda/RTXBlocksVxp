@@ -5,6 +5,7 @@
 #include "Protocol.h"
 #include "Player.h"
 #include "Profont6x11.h"
+#include "Entity.h"
 #ifndef MRE
 #include <imgui.h>
 sf::Uint8* pixels;
@@ -29,7 +30,12 @@ int_fixed* main_deep_buff2;
 unsigned short* second_canvas_buff;
 float* second_deep_buff;
 
+extern entity temp[100];
+extern int entity_info_count;
+
 extern unsigned short* blocks;
+
+extern unsigned short* steve;
 
 //temp
 struct Camera {
@@ -139,7 +145,7 @@ namespace Render {
 		b = c;
 	}
 
-	vertex2fd get2d(const vertex3f point, const camera_cache camera_c) {
+	vertex2fd get2d(const vertex3f point, const camera_cache& camera_c) {
 		vertex2fd res;
 		vector3f vec = { point.x - camera_c.pos.x, point.y - camera_c.pos.y, point.z - camera_c.pos.z };
 		float k = camera_c.L * camera_c.L / (vec.x * camera_c.cn.x + vec.y * camera_c.cn.y + vec.z * camera_c.cn.z);
@@ -210,7 +216,7 @@ namespace Render {
 				if (pos_in_buf >= 0 && pos_in_buf < s_w * s_h && sx >= 0 && sx < s_w)
 					if (deep_buf[pos_in_buf] > sd) {
 						scr_buf[pos_in_buf] = texture_buf[rtx + t_w * rty];
-						pos_in_buf = sd;
+						deep_buf[pos_in_buf] = sd;
 					}
 
 			}
@@ -252,7 +258,7 @@ namespace Render {
 			}
 			for (float tx = 0; tx < maxxp; tx++) {
 				float px = tx / maxxp;
-				int rtx = px * (tx2 - rtmdx) + tx1 + rtmdx;
+				int rtx = px * (tx2 - rtmdx - tx1) + tx1 + rtmdx;
 				int sx = px * (x23 - x13) + x13;
 				int sy = px * (y23 - y13) + y13;
 				int_fixed sd = FIXED_MULT(MAKE_FLOAT_FIXED(px), (d23 - d13)) + d13;
@@ -262,10 +268,26 @@ namespace Render {
 				if (pos_in_buf >= 0 && pos_in_buf < s_w * s_h && sx >= 0 && sx < s_w)
 					if (deep_buf[pos_in_buf] > sd) {
 						scr_buf[pos_in_buf] = texture_buf[rtx + t_w * rty];
-						pos_in_buf = sd;
+						deep_buf[pos_in_buf] = sd;
 					}
 			}
 		}
+	}
+
+	void quad(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, vertex3f v1, vertex3f v2, vertex3f v3, vertex3f v4, int tx, int ty, int tw, int th, int tg_w, const camera_cache& camera_c) {
+		vertex2fd v[4] =
+		{
+			get2d(v1, camera_c),
+			get2d(v2, camera_c),
+			get2d(v3, camera_c),
+			get2d(v4, camera_c),
+		};
+		texture_triangle_rasterezation(scr_buf, deep_buf, texture_buf, tg_w,
+			v[0], v[1], v[2],
+			tx, ty, tx +tw, ty, tx, ty + th);
+		texture_triangle_rasterezation2(scr_buf, deep_buf, texture_buf, tg_w,
+			v[2], v[3], v[1],
+			tx, ty + th, tx + tw, ty + th, tx + tw, ty);
 	}
 
 	bool pl_c = true;
@@ -573,42 +595,92 @@ namespace Render {
 			}
 			{
 				float tx = 53, ty = 18, tz = 52;
-				vertex2fd v[4] =
-				{
-					get2d({tx, ty, tz}, camera_c),
-					get2d({tx + 1, ty, tz}, camera_c),
-					get2d({tx, ty - 1, tz}, camera_c),
-					get2d({tx + 1, ty - 1, tz}, camera_c),
-				};
-				texture_triangle_rasterezation(buf_i, hbuf_i, blocks + (16 * 16) * 84, 16,
-					v[0], v[1], v[2],
-					0, 0, 16, 0, 0, 16);
-				texture_triangle_rasterezation2(buf_i, hbuf_i, blocks + (16 * 16) * 84, 16,
-					v[2], v[3], v[1],
-					0, 16, 16, 16, 16, 0);
-				/*float aa1 = 0, aa2 = 0, aa3 = 0, aa4 = 0, bb1 = 0, bb2 = 0, bb3 = 0, bb4 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0;
-				get_a_b_l(tx - camera.x, ty - camera.y, tz - camera.z,
-					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa1, bb1, l1);
-				get_a_b_l(tx - camera.x + 1, ty - camera.y, tz - camera.z,
-					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa2, bb2, l2);
-				get_a_b_l(tx - camera.x, ty - camera.y - 1, tz - camera.z,
-					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa3, bb3, l3);
-				get_a_b_l(tx - camera.x + 1, ty - camera.y - 1, tz - camera.z,
-					nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nw, nw / 3 * 4, aa4, bb4, l4);
-				float sx1 = (aa1 + 1.f) * float(imw / 2);
-				float sy1 = (bb1 + 1.f) * float(imh / 2);
-				float sx2 = (aa2 + 1.f) * float(imw / 2);
-				float sy2 = (bb2 + 1.f) * float(imh / 2);
-				float sx3 = (aa3 + 1.f) * float(imw / 2);
-				float sy3 = (bb3 + 1.f) * float(imh / 2);
-				float sx4 = (aa4 + 1.f) * float(imw / 2);
-				float sy4 = (bb4 + 1.f) * float(imh / 2);
-				texture_triangle_rasterezation(buf_i, blocks + (16 * 16) * 84, 16,
-					{sx1, sy1}, { sx2, sy2 }, { sx3, sy3 },
-					0, 0, 16, 0, 0, 16);*/
-					//texture_triangle_rasterezation2(buf_i, blocks + (16 * 16) * 84, 16,
-					//	sx3, sy3, sx4, sy4, sx2, sy2,
-					//	0, 16, 16, 16, 16, 0);
+				//quad(buf_i, hbuf_i, blocks + (16 * 16) * 84, { tx, ty, tz }, { tx + 1, ty, tz }, { tx, ty - 1, tz }, { tx + 1, ty - 1, tz }, 
+				//	8, 8, 8, 8, 16, camera_c);
+				
+
+				for (int i = 0; i < entity_info_count; ++i)
+					if (temp[i].is_player) {
+						entity& ent = temp[i];
+						float ha = (ent.hyaw + 90.f) * pi / 180.f;
+						float b = (ent.pitch + 90.f) * pi / 180.f;
+						float x = ent.x - start_chunk_x * 16;
+						float y = ent.y - start_chunk_y * 16 ;
+						float z = ent.z - start_chunk_z * 16;
+
+						float nx1 = cos(ha) * sin(b), nz1 = sin(ha) * sin(b), ny1 = cos(b);
+						float nx2 = cos(ha + pi / 2.f), nz2 = sin(ha + pi / 2.f), ny2 = 0;
+						//float nx2 = cos(ha + pi / 2.f), nz2 = sin(ha + pi / 2.f), ny2 = 0;
+						//float nx2 = sqrt(sqr(nz1) / (sqr(nz1) + sqr(nx1))), nz2 = sqrt(sqr(nx1) / (sqr(nz1) + sqr(nx1))), ny2 = 0;
+						//if (a_i == 10 || a_i == 2 || a_i == 3)
+						//	nx2 *= -1;
+						//if (a_i == 0 || a_i == 3)
+						//	nz2 *= -1;
+						float nx3 = nz1 * ny2 - ny1 * nz2, nz3 = -(nx1 * ny2 - ny1 * nx2), ny3 = nx1 * nz2 - nz1 * nx2;
+						
+						vector3f n1 = { nx1, ny1, nz1 };
+						vector3f n2 = { nx2, ny2, nz2 };
+						vector3f n3 = { nx3, ny3, nz3 };
+						{
+							vector3f pos = {x, y + 1.8f , z};
+							vector3f ln1 = n1 * 0.5;
+							vector3f ln2 = n2 * 0.5;
+							vector3f ln3 = n3 * 0.5;
+							//nx1 *= 0.5, nz1 *= 0.5, ny1 *= 0.5;
+							//nx2 *= 0.5, nz2 *= 0.5, ny2 *= 0.5;
+							//nx3 *= 0.5, nz3 *= 0.5, ny3 *= 0.5;
+
+							quad(buf_i, hbuf_i, steve,
+								pos + ln1 + ln2 + ln3,
+								pos + ln1 - ln2 + ln3,
+								pos + ln1 + ln2 - ln3,
+								pos + ln1 - ln2 - ln3,
+								8, 8, 8, 8, 64, camera_c);
+							quad(buf_i, hbuf_i, steve,
+								pos + ln1 - ln2 + ln3,
+								pos - ln1 - ln2 + ln3,
+								pos + ln1 - ln2 - ln3,
+								pos - ln1 - ln2 - ln3,
+								8 + 8, 8, 8, 8, 64, camera_c);
+							quad(buf_i, hbuf_i, steve,
+								pos - ln1 - ln2 + ln3,
+								pos - ln1 + ln2 + ln3,
+								pos - ln1 - ln2 - ln3,
+								pos - ln1 + ln2 - ln3,
+								8 + 16, 8, 8, 8, 64, camera_c);
+							quad(buf_i, hbuf_i, steve,
+								pos - ln1 + ln2 + ln3,
+								pos + ln1 + ln2 + ln3,
+								pos - ln1 + ln2 - ln3,
+								pos + ln1 + ln2 - ln3,
+								8 - 8, 8, 8, 8, 64, camera_c);
+							quad(buf_i, hbuf_i, steve,
+								pos - ln1 + ln2 + ln3,
+								pos - ln1 - ln2 + ln3,
+								pos + ln1 + ln2 + ln3,
+								pos + ln1 - ln2 + ln3,
+								8, 8 - 8, 8, 8, 64, camera_c);
+							quad(buf_i, hbuf_i, steve,
+								pos - ln1 - ln2 - ln3,
+								pos - ln1 + ln2 - ln3,
+								pos + ln1 - ln2 - ln3,
+								pos + ln1 + ln2 - ln3,
+								8 + 8, 8 - 8, 8, 8, 64, camera_c);
+						}
+					}
+				//vertex2fd v[4] =
+				//{
+				//	get2d({tx, ty, tz}, camera_c),
+				//	get2d({tx + 1, ty, tz}, camera_c),
+				//	get2d({tx, ty - 1, tz}, camera_c),
+				//	get2d({tx + 1, ty - 1, tz}, camera_c),
+				//};
+				//texture_triangle_rasterezation(buf_i, hbuf_i, blocks + (16 * 16) * 84, 16,
+				//	v[0], v[1], v[2],
+				//	0, 0, 16, 0, 0, 16);
+				//texture_triangle_rasterezation2(buf_i, hbuf_i, blocks + (16 * 16) * 84, 16,
+				//	v[2], v[3], v[1],
+				//	0, 16, 16, 16, 16, 0);
 			}
 		}
 	}

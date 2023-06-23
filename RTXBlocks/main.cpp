@@ -77,12 +77,22 @@ int main() {
 	blocks_.loadFromFile("terarian.png");
 	sf::Color* blocks = (sf::Color*)blocks_.getPixelsPtr();
 
-	/*{
+	{
 		sf::Image my_skin_;
 		my_skin_.loadFromFile("steve.png");
-		my_skin_.
 		sf::Color* my_skin = (sf::Color*)my_skin_.getPixelsPtr();
-	}*/
+		int n = my_skin_.getSize().x * my_skin_.getSize().y;
+		steve = new unsigned short[n];
+		for (int i = 0; i < n; ++i) {
+			sf::Color c = my_skin[i];
+			if (c.a == 0)
+				c = sf::Color(255, 0, 255);
+			else
+				c.a = 255;
+			steve[i] = VM_COLOR_888_TO_565(c.r, c.g, c.b);
+		}
+
+	}
 
 	sf::Texture temp_preview;
 	temp_preview.loadFromFile("texture_previev1.png");

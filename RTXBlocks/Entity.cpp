@@ -4,8 +4,8 @@
 #include <imgui.h>
 #endif // !MRE
 
-static entity temp[100];
-static int entity_info_count = 0;
+entity temp[100];
+int entity_info_count = 0;
 
 namespace Entity {
 #ifndef MRE

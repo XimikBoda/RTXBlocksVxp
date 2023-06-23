@@ -12,6 +12,15 @@ namespace Render
 {
 	struct vector3f {
 		float x = 0, y = 0, z = 0;
+		vector3f operator+(const vector3f& s) {
+			return { x + s.x, y + s.y, z + s.z};
+		}
+		vector3f operator-(const vector3f& s) {
+			return { x - s.x, y - s.y, z - s.z };
+		}
+		vector3f operator*(const float c) {
+			return { x * c, y * c, z * c };
+		}
 	};
 	struct vertex2fd {
 		float x = 0, y = 0;
