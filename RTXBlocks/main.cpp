@@ -92,6 +92,9 @@ int main() {
 			steve[i] = VM_COLOR_888_TO_565(c.r, c.g, c.b);
 		}
 
+		std::ofstream out("steve.bin", std::ios_base::binary);
+		out.write((char*)steve, n * 2);
+		out.close();
 	}
 
 	sf::Texture temp_preview;

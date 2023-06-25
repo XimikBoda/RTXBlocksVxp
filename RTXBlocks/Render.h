@@ -54,6 +54,7 @@ namespace Render
 	void render(sf::Texture& tex);
 	void render2(sf::Texture& tex);
 #endif // !MRE
+	void second_render(unsigned short* buf_i, int_fixed* hbuf_i);
 	void main_render();
 };
 

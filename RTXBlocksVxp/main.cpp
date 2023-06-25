@@ -21,6 +21,12 @@ VMINT layer_hdls[2] = {-1,-1};
 extern unsigned int tcp_in_statistic, tcp_out_statistic;
 extern unsigned int udp_in_statistic, udp_out_statistic;
 
+extern int_fixed* main_deep_buff;
+extern int_fixed* main_deep_buff2;
+
+
+unsigned short* steve;
+
 int render_c = 0;
 
 void handle_sysevt(VMINT message, VMINT param);
@@ -56,6 +62,8 @@ void main_timer(int tid){
 	Protocol::update();
 	Player::update(d_time);
 	Render::main_render();
+	memcpy(main_deep_buff2, main_deep_buff, s_w*s_h*4);
+	Render::second_render(layer_bufs[1], main_deep_buff2);
 	Keyboard::update();
 
 	{
@@ -69,9 +77,6 @@ void main_timer(int tid){
 		Render::draw_text_white(layer_bufs[1], 0, 11, tmp);
 	}
 	extern unsigned short* blocks;
-	Render::texture_triangle_rasterezation(layer_bufs[1], blocks + (16 * 16), 16,
-		10, 10, 200, 50, 50, 200,
-		0, 0, 16, 0, 0, 16);
 
 	vm_graphic_flush_layer(layer_hdls, 2);
 }
@@ -112,6 +117,7 @@ void vm_main(void){
 
 	extern unsigned short* blocks;
 	read_from_file_to_addr("e:\\RTXBlocks\\blocks_texture.bin", (void**)&blocks);
+	read_from_file_to_addr("e:\\RTXBlocks\\steve.bin", (void**)&steve);
 
 	BlockPalette::biome_set();
 }
