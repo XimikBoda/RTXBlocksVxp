@@ -315,10 +315,10 @@ namespace Protocol
 						int number_of_properties = PacketOpener::read_VarInt();
 
 						for (int j = 0; j < number_of_properties; ++j) {
-							PacketOpener::read_VarInt();
-							PacketOpener::read_VarInt();
+							PacketOpener::read_string();
+							PacketOpener::read_string();
 							if (PacketOpener::read_bool())
-								PacketOpener::read_VarInt();
+								PacketOpener::read_string();
 						}
 
 						new_pl->gamemode = PacketOpener::read_VarInt();

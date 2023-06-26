@@ -185,6 +185,9 @@ namespace Render {
 		float x1 = v1.x, y1 = v1.y, x2 = v2.x, y2 = v2.y, x3 = v3.x, y3 = v3.y, x4 = v4.x, y4 = v4.y;
 		int_fixed d1 = v1.d, d2 = v2.d, d3 = v3.d, d4 = v4.d;
 
+		if (x1 != x1 || y1 != y1 || x2 != x2 || y2 != y2 || x3 != x3 || y3 != y3 || x4 != x4 || y4 != y4)
+			return;
+
 		float l12 = sqrt(len(x1, y1, x2, y2));
 		float l13 = sqrt(len(x1, y1, x3, y3));
 		float l24 = sqrt(len(x2, y2, x4, y4));
@@ -230,46 +233,58 @@ namespace Render {
 		}
 	}
 
-	void texture_triangle_rasterezation(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, int t_w, vertex2fd v1, vertex2fd v2, vertex2fd v3, float tx1, float ty1, float tx2, float ty2, float tx3, float ty3) {
+	void texture_quad_rasterezation_fi(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, int txx, int txy, int txw, int txh, int t_w, vertex2fd v1, vertex2fd v2, vertex2fd v3, vertex2fd v4) {
 		// 1--2
-		// | /
-		// 3
+		// |  |
+		// 3--4
 
-		float x1 = v1.x, y1 = v1.y, x2 = v2.x, y2 = v2.y, x3 = v3.x, y3 = v3.y;
-		int_fixed d1 = v1.d, d2 = v2.d, d3 = v3.d;
+		float x1 = v1.x, y1 = v1.y, x2 = v2.x, y2 = v2.y, x3 = v3.x, y3 = v3.y, x4 = v4.x, y4 = v4.y;
+		int_fixed d1 = v1.d, d2 = v2.d, d3 = v3.d, d4 = v4.d;
+
+		if (x1 != x1 || y1 != y1 || x2 != x2 || y2 != y2 || x3 != x3 || y3 != y3 || x4 != x4 || y4 != y4)
+			return;
 
 		float l12 = sqrt(len(x1, y1, x2, y2));
 		float l13 = sqrt(len(x1, y1, x3, y3));
-		float l23 = sqrt(len(x2, y2, x3, y3));
-		float maxy = l13 > l23 ? l13 : l23;
-		float maxx = l12;
+		float l24 = sqrt(len(x2, y2, x4, y4));
+		float l34 = sqrt(len(x3, y3, x4, y4));
+		int maxy = (l13 > l24 ? l13 : l24)+10;
+		int maxx = (l12 > l34 ? l12 : l34)+10;
 
-		if (maxy > 320 || maxx > 240)
+
+
+		if (maxy > 320 || maxx > 240 || maxy == 0 || maxx == 0)
 			return;
 
-		for (float ty = 0; ty < maxy; ++ty) {
-			float p = ty / maxy;
-			float x13 = p * (x3 - x1) + x1;
-			float y13 = p * (y3 - y1) + y1;
-			float x23 = p * (x3 - x2) + x2;
-			float y23 = p * (y3 - y2) + y2;
-			int_fixed d13 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d1)) + d1;
-			int_fixed d23 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d2)) + d2;
+		int_fixed maxyfi = MAKE_INT_FIXED(maxy);
+		int_fixed maxxfi = MAKE_INT_FIXED(maxx);
+		int_fixed x1fi = MAKE_FLOAT_FIXED(x1);
+		int_fixed y1fi = MAKE_FLOAT_FIXED(y1);
+		int_fixed x2fi = MAKE_FLOAT_FIXED(x2);
+		int_fixed y2fi = MAKE_FLOAT_FIXED(y2);
+		int_fixed x3fi = MAKE_FLOAT_FIXED(x3);
+		int_fixed y3fi = MAKE_FLOAT_FIXED(y3);
+		int_fixed x4fi = MAKE_FLOAT_FIXED(x4);
+		int_fixed y4fi = MAKE_FLOAT_FIXED(y4);
 
-			int rty = (ty3 - ty1) * p + ty1;
-			float rtmdx = (tx2 - tx1) * (1 - p);
-			float maxxp = maxx * (1 - p);
-			if (x13 > x23) {
-				swap(x13, x23);
-				swap(y13, y23);
-				swap(d13, d23);
-			}
-			for (float tx = 0; tx < maxxp; tx++) {
-				float px = tx / maxxp;
-				int rtx = px * rtmdx + tx1;
-				int sx = px * (x23 - x13) + x13;
-				int sy = px * (y23 - y13) + y13;
-				int_fixed sd = FIXED_MULT(MAKE_FLOAT_FIXED(px), (d23 - d13)) + d13;
+		for (int ty = 0; ty < maxy; ++ty) {
+			int_fixed pfi = FIXED_DIV(MAKE_INT_FIXED(ty), maxyfi);
+			int_fixed x13fi = FIXED_MULT(pfi, (x3fi - x1fi)) + x1fi;
+			int_fixed y13fi = FIXED_MULT(pfi, (y3fi - y1fi)) + y1fi;
+			int_fixed x24fi = FIXED_MULT(pfi, (x4fi - x2fi)) + x2fi;
+			int_fixed y24fi = FIXED_MULT(pfi, (y4fi - y2fi)) + y2fi;
+
+			int_fixed d13 = FIXED_MULT(pfi, (d3 - d1)) + d1;
+			int_fixed d24 = FIXED_MULT(pfi, (d4 - d2)) + d2;
+
+			int rty = MAKE_FIXED_INT(FIXED_MULT(pfi, MAKE_INT_FIXED(txh))) + txy;
+			for (int tx = 0; tx < maxx; tx++) {
+				int_fixed pxfi = FIXED_DIV(MAKE_INT_FIXED(tx), maxxfi);
+				int rtx = MAKE_FIXED_INT(FIXED_MULT(pxfi, MAKE_INT_FIXED(txw))) + txx;
+
+				int sx = MAKE_FIXED_INT(FIXED_MULT(pxfi, (x24fi - x13fi)) + x13fi);
+				int sy = MAKE_FIXED_INT(FIXED_MULT(pxfi, (y24fi - y13fi)) + y13fi);
+				int_fixed sd = FIXED_MULT(pxfi, (d24 - d13)) + d13;
 				if (sd < 0)
 					continue;
 				int pos_in_buf = sx + s_w * sy;
@@ -282,58 +297,6 @@ namespace Render {
 			}
 		}
 	}
-	void texture_triangle_rasterezation2(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, int t_w, vertex2fd v1, vertex2fd v2, vertex2fd v3, float tx1, float ty1, float tx2, float ty2, float tx3, float ty3) {
-		//    3
-		//  / |
-		// 1--2
-
-		float x1 = v1.x, y1 = v1.y, x2 = v2.x, y2 = v2.y, x3 = v3.x, y3 = v3.y;
-		int_fixed d1 = v1.d, d2 = v2.d, d3 = v3.d;
-
-		float l12 = sqrt(len(x1, y1, x2, y2));
-		float l13 = sqrt(len(x1, y1, x3, y3));
-		float l23 = sqrt(len(x2, y2, x3, y3));
-		float maxy = l13 > l23 ? l13 : l23;
-		float maxx = l12;
-
-		if (maxy > 320 || maxx > 240)
-			return;
-
-		for (float ty = 0; ty < maxy; ++ty) {
-			float p = ty / maxy;
-			float x13 = p * (x3 - x1) + x1;
-			float y13 = p * (y3 - y1) + y1;
-			float x23 = p * (x3 - x2) + x2;
-			float y23 = p * (y3 - y2) + y2;
-			int_fixed d13 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d1)) + d1;
-			int_fixed d23 = FIXED_MULT(MAKE_FLOAT_FIXED(p), (d3 - d2)) + d2;
-
-			int rty = (ty1 - ty3) * (1 - p) + ty3;
-			float rtmdx = (tx2 - tx1) * p;
-			float maxxp = maxx * (1 - p);
-			if (x13 > x23) {
-				swap(x13, x23);
-				swap(y13, y23);
-				swap(d13, d23);
-			}
-			for (float tx = 0; tx < maxxp; tx++) {
-				float px = tx / maxxp;
-				int rtx = px * (tx2 - rtmdx - tx1) + tx1 + rtmdx;
-				int sx = px * (x23 - x13) + x13;
-				int sy = px * (y23 - y13) + y13;
-				int_fixed sd = FIXED_MULT(MAKE_FLOAT_FIXED(px), (d23 - d13)) + d13;
-				if (sd < 0)
-					continue;
-				int pos_in_buf = sx + s_w * sy;
-				if (pos_in_buf >= 0 && pos_in_buf < s_w * s_h && sx >= 0 && sx < s_w)
-					if (deep_buf[pos_in_buf] > sd) {
-						scr_buf[pos_in_buf] = texture_buf[rtx + t_w * rty];
-						deep_buf[pos_in_buf] = sd;
-					}
-			}
-		}
-	}
-
 	void quad(unsigned short* scr_buf, int_fixed* deep_buf, unsigned short* texture_buf, vertex3f v1, vertex3f v2, vertex3f v3, vertex3f v4, int tx, int ty, int tw, int th, int tg_w, const camera_cache& camera_c) {
 		vertex2fd v[4] =
 		{
@@ -342,7 +305,7 @@ namespace Render {
 			get2d(v3, camera_c),
 			get2d(v4, camera_c),
 		};
-		texture_quad_rasterezation(scr_buf, deep_buf, texture_buf,
+		texture_quad_rasterezation_fi(scr_buf, deep_buf, texture_buf,
 			tx, ty, tw, th, tg_w,
 			v[0], v[1], v[2], v[3]);
 		//texture_triangle_rasterezation(scr_buf, deep_buf, texture_buf, tg_w,
@@ -355,7 +318,7 @@ namespace Render {
 
 	void second_render(unsigned short* buf_i, int_fixed* hbuf_i) {
 		for (int i = 0; i < entity_info_count; ++i)
-			if (temp[i].is_player) {
+			if (temp[i].is_player||1) {
 				entity& ent = temp[i];
 				float ha = (ent.hyaw + 90.f) * pi / 180.f;
 				float b = (ent.pitch + 90.f) * pi / 180.f;
@@ -420,8 +383,8 @@ namespace Render {
 				}
 				{
 					player_info* pi = PlayerInfo::get_find_by_uuid(&ent.uuid);
-					if (pi) {
-						vertex2fd nick_2d = get2d({ x, y + 2.2f, z }, camera_c);
+					vertex2fd nick_2d = get2d({ x, y + 2.2f, z }, camera_c);
+					if (pi&& nick_2d.d>=0) {
 						draw_text_white(buf_i, nick_2d.x - strlen(pi->nick) * 3, nick_2d.y, pi->nick);
 					}
 				}
@@ -449,7 +412,7 @@ namespace Render {
 		tex.loadFromImage(im);
 	}
 
-	
+
 
 	void main_render() {
 		if (pl_c) {
@@ -501,7 +464,7 @@ namespace Render {
 			int_fixed cam_f = MAKE_FLOAT_FIXED(camera.f / 255.f);
 
 			//printf("%d %d %d\n", nwf, nhf, Lf);
-			
+
 
 			camera_c = { {camera.x, camera.y, camera.z}, {nx1, ny1, nz1}, {nx2, ny2, nz2}, {nx3, ny3, nz3}, nw, nw / 3 * 4, L };
 
@@ -736,8 +699,8 @@ namespace Render {
 			}
 			second_render(buf_i, hbuf_i);
 
-		}
 	}
+}
 #else
 	void main_render() {
 		if (pl_c) {

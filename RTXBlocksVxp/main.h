@@ -23,6 +23,11 @@ typedef int int_fixed;
 
 void show_error_and_exit(const char *text);
 
+enum GameState {
+	Play,
+	Chat
+};
+
 #ifdef WIN32
 #define my_printf(...) printf(__VA_ARGS__)
 #else
