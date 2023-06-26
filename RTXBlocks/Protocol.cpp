@@ -409,6 +409,7 @@ namespace Protocol
 				int z = PacketOpener::read_VarInt();
 				if (pl_nrm)
 					World::set_center_chunk(start_chunk_x + int(player.x) / 16, start_chunk_z + int(player.z) / 16, start_chunk_y + int(player.y) / 16);
+				render_c = 1;
 				//World::set_center_chunk(x, z, center_chunk_y);
 			}
 			break;
@@ -434,6 +435,7 @@ namespace Protocol
 				int y = PacketOpener::read_VarInt();
 				int z = PacketOpener::read_VarInt();
 				World::load_chunck_section(x, y, z, (unsigned short*)(PacketOpener::get_buf() + PacketOpener::get_pos()));
+				render_c = 1;
 			}
 			break;
 

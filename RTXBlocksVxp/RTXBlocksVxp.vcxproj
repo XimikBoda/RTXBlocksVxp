@@ -181,6 +181,7 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sock.cpp" />
+    <ClCompile Include="T2Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="makefile" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\RTXBlocks\Keyboard.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="T2Input.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\RTXBlocksVxp.res.xml" />
