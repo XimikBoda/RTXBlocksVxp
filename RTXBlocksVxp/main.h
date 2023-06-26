@@ -24,8 +24,8 @@ typedef int int_fixed;
 void show_error_and_exit(const char *text);
 
 enum GameState {
-	Play,
-	Chat
+	PlayS,
+	ChatS
 };
 
 #ifdef WIN32

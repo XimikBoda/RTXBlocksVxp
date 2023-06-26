@@ -24,7 +24,7 @@ extern unsigned int udp_in_statistic, udp_out_statistic;
 extern int_fixed* main_deep_buff;
 extern int_fixed* main_deep_buff2;
 
-GameState gameState = GameState::Play;
+GameState gameState = GameState::PlayS;
 
 unsigned short* steve;
 
@@ -173,7 +173,7 @@ void handle_keyevt(VMINT event, VMINT keycode) {
 	else if(VM_KEY_NUM7<=keycode&&keycode<=VM_KEY_NUM9)
 		keycode-=6;
 #endif
-	if(gameState==Play)
+	if(gameState==PlayS)
 		Keyboard::keyboard_event(keycode,event);
 }
 
