@@ -127,6 +127,53 @@ namespace Render {
 			}
 		}
 	}
+	void draw_text_white_by_len(unsigned short* buf, int x, int y, const char* str, int len) {
+		for (int ci = 0; ci<len; ++ci) {
+			const unsigned char* font_ch = ProFont6x11 + 5 + 12 * str[ci] + 1;
+			//unsigned short textcolor = main_text[y][x].textcolor, backcolor = main_text[y][x].backcolor;
+			//if (main_text[y][x].flgs & 1)
+			//	textcolor = ~textcolor, backcolor = ~backcolor;
+
+			int t_char_width = pro_char_width;
+			if (x + ci * pro_char_width + pro_char_width > s_w) {
+				t_char_width = s_w - x + ci * pro_char_width;
+				if (t_char_width <= 0)
+					break;
+			}
+			for (int i = 0; i < pro_char_height; ++i) {
+				unsigned short* scr_buf = (unsigned short*)buf + x + ci * pro_char_width + (y + i) * s_w;
+				if (y + i > 0 && y + i < s_h)
+					for (int j = 0; j < t_char_width; ++j)
+						if ((((*font_ch) >> j) & 1) && (x + ci * pro_char_width + j) >= 0 && (x + ci * pro_char_width + j) < s_w)
+							scr_buf[j] = 0xFFFF;
+				//scr_buf[j] = ((((*font_ch) >> j) & 1) ? textcolor : backcolor);
+				++font_ch;
+			}
+		}
+	}
+	void draw_text_white_with_black_by_len(unsigned short* buf, int x, int y, const char* str, int len) {
+		for (int ci = 0; ci < len && str[ci]; ++ci) {//todo
+			const unsigned char* font_ch = ProFont6x11 + 5 + 12 * str[ci] + 1;
+			//unsigned short textcolor = main_text[y][x].textcolor, backcolor = main_text[y][x].backcolor;
+			//if (main_text[y][x].flgs & 1)
+			//	textcolor = ~textcolor, backcolor = ~backcolor;
+
+			int t_char_width = pro_char_width;
+			if (x + ci * pro_char_width + pro_char_width > s_w) {
+				t_char_width = s_w - x + ci * pro_char_width;
+				if (t_char_width <= 0)
+					break;
+			}
+			for (int i = 0; i < pro_char_height; ++i) {
+				unsigned short* scr_buf = (unsigned short*)buf + x + ci * pro_char_width + (y + i) * s_w;
+				if (y + i > 0 && y + i < s_h)
+					for (int j = 0; j < t_char_width; ++j)
+						if ((x + ci * pro_char_width + j) >= 0 && (x + ci * pro_char_width + j) < s_w)
+							scr_buf[j] = ((((*font_ch) >> j) & 1) ? 0xFFFF : 0x0000);
+				++font_ch;
+			}
+		}
+	}
 
 	float len(float x1, float y1, float x2, float y2) {
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);

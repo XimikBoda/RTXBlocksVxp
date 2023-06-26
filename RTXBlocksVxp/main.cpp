@@ -11,6 +11,7 @@
 #include "../RTXBlocks/Time.h"
 #include "../RTXBlocks/Chat.h"
 #include "../RTXBlocks/Keyboard.h"
+#include "T2Input.h"
 #include "Log.h"
 //#include "../RTXBlocks/Profont6x11.h"
 
@@ -24,14 +25,17 @@ extern unsigned int udp_in_statistic, udp_out_statistic;
 extern int_fixed* main_deep_buff;
 extern int_fixed* main_deep_buff2;
 
-GameState gameState = GameState::Play;
+GameState gameState = GameState::PlayS;
 
 unsigned short* steve;
 
 int render_c = 0;
 
+T2Input t2input;
+
 void handle_sysevt(VMINT message, VMINT param);
 void handle_keyevt(VMINT event, VMINT keycode);
+void handle_penevt(VMINT event, VMINT x, VMINT y);
 
 void init_all(){
 	Log::init();
@@ -42,6 +46,7 @@ void init_all(){
 	PacketMaker::init();
 	PacketOpener::init();
 	World::init();
+	t2input.init();
 }
 
 void deinit_all(){
@@ -65,6 +70,10 @@ void main_timer(int tid){
 	Render::main_render();
 	memcpy(main_deep_buff2, main_deep_buff, s_w*s_h*4);
 	Render::second_render(layer_bufs[1], main_deep_buff2);
+	if (gameState == ChatS)
+		Chat::draw_input(layer_bufs[1]);
+	Chat::draw_chat(layer_bufs[1]);
+	t2input.draw();
 	Keyboard::update();
 
 	{
@@ -115,6 +124,7 @@ void vm_main(void){
 	
 	vm_reg_sysevt_callback(handle_sysevt);
 	vm_reg_keyboard_callback(handle_keyevt);
+	vm_reg_pen_callback(handle_penevt);
 
 	extern unsigned short* blocks;
 	read_from_file_to_addr("e:\\RTXBlocks\\blocks_texture.bin", (void**)&blocks);
@@ -141,6 +151,8 @@ void handle_sysevt(VMINT message, VMINT param) {
 		vm_switch_power_saving_mode(turn_off_mode);
 		if (message == VM_MSG_CREATE) {
 			Render::init();
+			t2input.scr_buf = (VMUINT8*)layer_bufs[1];
+			t2input.layer_handle = layer_hdls[1];
 			vm_create_timer_ex(10, main_timer);
 		}
 		break;
@@ -165,6 +177,18 @@ void handle_sysevt(VMINT message, VMINT param) {
 	}
 }
 
+void handle_keyevt_s(VMINT event, VMINT keycode) {
+	if (gameState == PlayS) {
+		Keyboard::keyboard_event(keycode, event);
+		if (keycode == VM_KEY_STAR && event == VM_KEY_EVENT_UP)
+			gameState = ChatS;
+	}
+	else if (gameState == ChatS) {
+		t2input.handle_keyevt(event, keycode);
+		if (keycode == VM_KEY_STAR && event == VM_KEY_EVENT_UP)
+			gameState = PlayS;
+	}
+}
 
 void handle_keyevt(VMINT event, VMINT keycode) {
 #ifdef WIN32   //Fix for MoDIS
@@ -173,8 +197,12 @@ void handle_keyevt(VMINT event, VMINT keycode) {
 	else if(VM_KEY_NUM7<=keycode&&keycode<=VM_KEY_NUM9)
 		keycode-=6;
 #endif
-	if(gameState==Play)
-		Keyboard::keyboard_event(keycode,event);
+	handle_keyevt_s(event, keycode);
+}
+
+void handle_penevt(VMINT event, VMINT x, VMINT y) { 
+	//if (gameState == ChatS)
+		t2input.handle_penevt(event, x, y);
 }
 
 void input_exit(VMINT state, VMWSTR text){
