@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="..\RTXBlocks\BlockPalette.cpp" />
     <ClCompile Include="..\RTXBlocks\Chat.cpp" />
+    <ClCompile Include="..\RTXBlocks\Entity.cpp" />
     <ClCompile Include="..\RTXBlocks\Keyboard.cpp" />
     <ClCompile Include="..\RTXBlocks\miniz.c" />
     <ClCompile Include="..\RTXBlocks\PacketMaker.cpp" />

@@ -82,6 +82,9 @@ namespace Keyboard
 		case sf::Keyboard::Q:
 			keyboard_event(VM_KEY_NUM1, p);
 			break;
+		case sf::Keyboard::Z:
+			keyboard_event(VM_KEY_NUM3, p);
+			break;
 		case sf::Keyboard::LShift:
 			keyboard_event(VM_KEY_NUM7, p);
 			break;

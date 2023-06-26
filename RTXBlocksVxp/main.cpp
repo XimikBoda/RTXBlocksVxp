@@ -21,6 +21,13 @@ VMINT layer_hdls[2] = {-1,-1};
 extern unsigned int tcp_in_statistic, tcp_out_statistic;
 extern unsigned int udp_in_statistic, udp_out_statistic;
 
+extern int_fixed* main_deep_buff;
+extern int_fixed* main_deep_buff2;
+
+GameState gameState = GameState::Play;
+
+unsigned short* steve;
+
 int render_c = 0;
 
 void handle_sysevt(VMINT message, VMINT param);
@@ -56,6 +63,8 @@ void main_timer(int tid){
 	Protocol::update();
 	Player::update(d_time);
 	Render::main_render();
+	memcpy(main_deep_buff2, main_deep_buff, s_w*s_h*4);
+	Render::second_render(layer_bufs[1], main_deep_buff2);
 	Keyboard::update();
 
 	{
@@ -68,6 +77,7 @@ void main_timer(int tid){
 			udp_in_statistic / 1024, udp_out_statistic / 1024);
 		Render::draw_text_white(layer_bufs[1], 0, 11, tmp);
 	}
+	extern unsigned short* blocks;
 
 	vm_graphic_flush_layer(layer_hdls, 2);
 }
@@ -108,6 +118,7 @@ void vm_main(void){
 
 	extern unsigned short* blocks;
 	read_from_file_to_addr("e:\\RTXBlocks\\blocks_texture.bin", (void**)&blocks);
+	read_from_file_to_addr("e:\\RTXBlocks\\steve.bin", (void**)&steve);
 
 	BlockPalette::biome_set();
 }
@@ -162,8 +173,8 @@ void handle_keyevt(VMINT event, VMINT keycode) {
 	else if(VM_KEY_NUM7<=keycode&&keycode<=VM_KEY_NUM9)
 		keycode-=6;
 #endif
-
-	Keyboard::keyboard_event(keycode,event);
+	if(gameState==Play)
+		Keyboard::keyboard_event(keycode,event);
 }
 
 void input_exit(VMINT state, VMWSTR text){

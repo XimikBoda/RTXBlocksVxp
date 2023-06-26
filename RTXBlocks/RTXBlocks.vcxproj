@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="BlockPalette.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="miniz.c" />
@@ -167,6 +168,7 @@
     <ClInclude Include="BlockPalette.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="collisions.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="miniz.h" />

@@ -27,8 +27,13 @@
 #include "Time.h"
 #include "Chat.h"
 #include "Keyboard.h"
+#include "Entity.h"
 
-const float pi = M_PI;
+//const float pi = M_PI;
+
+#define VM_COLOR_888_TO_565(r, g, b)	(((r & 0xf8) + ((g & 0xe0) >> 5)) << 8) + ((g & 0x1c) << 3) + (b >> 3)
+
+unsigned short* steve;
 
 typedef int int_fixed;
 
@@ -72,10 +77,25 @@ int main() {
 	blocks_.loadFromFile("terarian.png");
 	sf::Color* blocks = (sf::Color*)blocks_.getPixelsPtr();
 
+	{
+		sf::Image my_skin_;
+		my_skin_.loadFromFile("steve.png");
+		sf::Color* my_skin = (sf::Color*)my_skin_.getPixelsPtr();
+		int n = my_skin_.getSize().x * my_skin_.getSize().y;
+		steve = new unsigned short[n];
+		for (int i = 0; i < n; ++i) {
+			sf::Color c = my_skin[i];
+			if (c.a == 0)
+				c = sf::Color(255, 0, 255);
+			else
+				c.a = 255;
+			steve[i] = VM_COLOR_888_TO_565(c.r, c.g, c.b);
+		}
 
-	sf::Image my_skin_;
-	my_skin_.loadFromFile("my_skin.png");
-	sf::Color* my_skin = (sf::Color*)my_skin_.getPixelsPtr();
+		std::ofstream out("steve.bin", std::ios_base::binary);
+		out.write((char*)steve, n * 2);
+		out.close();
+	}
 
 	sf::Texture temp_preview;
 	temp_preview.loadFromFile("texture_previev1.png");
@@ -149,6 +169,7 @@ int main() {
 		Time::draw_ImGui();
 		Chat::draw_ImGui();
 		Player::ImGui_draw();
+		Entity::imgui_draw();
 
 		if(ImGui::Begin("Main")){
 			ImGui::Text("Delta time = %d", d_time);
