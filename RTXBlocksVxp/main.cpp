@@ -27,6 +27,12 @@ extern int_fixed* main_deep_buff2;
 
 GameState gameState = GameState::PlayS;
 
+extern Player_s player;
+
+extern int start_chunk_x;
+extern int start_chunk_z;
+extern int start_chunk_y;
+
 unsigned short* steve;
 
 int render_c = 0;
@@ -82,9 +88,13 @@ void main_timer(int tid){
 		sprintf(tmp, "Fps: %d, dt: %d", (d_time ? 1000 / d_time : 0), d_time);
 		Render::draw_text_white(layer_bufs[1], 0, 0 , tmp);
 
-		sprintf(tmp, "TCP i/o: %dKB/%dKB, UDP i/o: %dKB/%dKB", tcp_in_statistic / 1024, tcp_out_statistic / 1024, 
+		sprintf(tmp, "TCP i/o: %dKB/%dKB, UDP i/o: %dKB/%dKB", tcp_in_statistic / 1024, tcp_out_statistic / 1024,
 			udp_in_statistic / 1024, udp_out_statistic / 1024);
 		Render::draw_text_white(layer_bufs[1], 0, 11, tmp);
+
+		//sprintf(tmp, "x: %f, y: %f, z:%f", player.x + float(start_chunk_x * 16), 
+		//	player.y + float(start_chunk_y * 16), player.z + float(start_chunk_z * 16));
+		//Render::draw_text_white(layer_bufs[1], 0, 22, tmp);
 	}
 	extern unsigned short* blocks;
 

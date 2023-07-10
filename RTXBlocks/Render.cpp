@@ -365,7 +365,7 @@ namespace Render {
 
 	void second_render(unsigned short* buf_i, int_fixed* hbuf_i) {
 		for (int i = 0; i < entity_info_count; ++i)
-			if (temp[i].is_player||1) {
+			if (temp[i].is_player) {
 				entity& ent = temp[i];
 				float ha = (ent.hyaw + 90.f) * pi / 180.f;
 				float b = (ent.pitch + 90.f) * pi / 180.f;

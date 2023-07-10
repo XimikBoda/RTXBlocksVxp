@@ -28,6 +28,7 @@ namespace World {
 	void set_block(int x, int y, int z, unsigned short id);
 	unsigned short get_block(int x, int y, int z);
 	unsigned short get_block_l(int x, int y, int z);
+	bool check_load(int cx, int cy, int cz);
 	//void set_center_chunk_y();
 	void ImGui_draw();
 #ifndef MRE

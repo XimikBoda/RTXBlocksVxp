@@ -9,6 +9,7 @@
 static std::string chat_text;
 #else
 #include"../RTXBlocksVxp/main.h"
+extern GameState gameState;
 #endif // !MRE
 const int chat_lines = 10;
 const int ch_in_w = s_w / 6;
@@ -23,7 +24,6 @@ static int down_pos = s_h;
 
 extern int input_cursor_x, input_cursor_y;
 
-extern GameState gameState;
 
 namespace Chat
 {
@@ -48,7 +48,8 @@ namespace Chat
 		}
 		ImGui::End();
 	}
-#endif // !MRE
+#else
+
 
 	static int min(int a, int b) {
 		return a < b ? a : b;
@@ -67,8 +68,8 @@ namespace Chat
 	void draw_chat(unsigned short* buf) {
 		int time = vm_get_tick_count();
 		if (gameState != ChatS)
-		//	vm_graphic_fill_rect((VMUINT8*)buf, 0, down_pos - chat_lines * 11, s_w, chat_lines * 11, 0, 0);
-		//else
+			//	vm_graphic_fill_rect((VMUINT8*)buf, 0, down_pos - chat_lines * 11, s_w, chat_lines * 11, 0, 0);
+			//else
 			down_pos = s_h;
 		for (int i = 0; i < chat_lines; ++i)
 			if (gameState == ChatS || time - chat_text_times[i] < 5000)
@@ -88,23 +89,26 @@ namespace Chat
 				input_text[input_text_len++] = ch;
 		}
 	}
+#endif // !MRE
 	static void new_line() {
 		memmove(chat_text_, chat_text_ + ch_in_w, ch_in_w * (chat_lines - 1));
 		memmove(chat_text_times, chat_text_times + 1, 4 * (chat_lines - 1));
 		chat_text_pos = 0;
 		memset(chat_text_ + ch_in_w * 9, 0, ch_in_w);
 	}
+
 	void add_to_chat(const char ch) {
+#ifdef MRE
 		if (chat_text_pos == ch_in_w && ch != '\n')
 			new_line();
 		if (ch == '\n') {
 			chat_text_pos = ch_in_w;
 			return;
-	}
+		}
 		chat_text_[ch_in_w * 9 + chat_text_pos++] = ch;
 		chat_text_times[chat_lines - 1] = vm_get_tick_count();
+#endif // MRE
 	}
-
 	void add_text(char* who, char* text) {
 #ifndef MRE
 		chat_text = chat_text + "\n[" + who + "] " + text;
@@ -119,7 +123,7 @@ namespace Chat
 		for (; *text; ++text)
 			add_to_chat(*text);
 		add_to_chat('\n');
-}
+	}
 	void add_text(char* text) {
 #ifndef MRE
 		chat_text += text;
@@ -130,4 +134,4 @@ namespace Chat
 			add_to_chat(*text);
 		add_to_chat('\n');
 	}
-	};
+};

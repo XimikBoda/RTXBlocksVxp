@@ -136,14 +136,18 @@ namespace Player
 			Keyboard::pres(VM_KEY_RIGHT))
 			change_rotation = true;
 
-		if (player.acs)
+		//if (Keyboard::click(VM_KEY_NUM3))
+		if (int(player.x) % 16 == 0)
+			sup_pos = World::check_load(int(player.x) / 16, int(player.y) / 16, int(player.z) / 16) &&
+			World::check_load(int(player.x - 1) / 16, int(player.y) / 16, int(player.z) / 16);
+		else
+			sup_pos = World::check_load(int(player.x) / 16, int(player.y) / 16, int(player.z) / 16);
+
+		if (player.acs && sup_pos)
 			change_position = true;
 
 		if (Keyboard::click(VM_KEY_NUM1))
 			player.zoom = !player.zoom;
-
-		if (Keyboard::click(VM_KEY_NUM3))
-			sup_pos = !sup_pos;
 
 		//if (keyclick(VM_KEY_NUM7))
 		//	player.sit = !player.sit;
@@ -200,8 +204,10 @@ namespace Player
 			else
 				player.acs -= 9.8 * d_time / 1000.f;
 		}
-			
-		
+		else
+			player.acs = 0;
+
+
 
 		int forward = 0, rigth = 0;
 
@@ -243,7 +249,7 @@ namespace Player
 			float xx = cos(walk_a) * walk_sp * d_time / 1000.f;
 			float zz = sin(walk_a) * walk_sp * d_time / 1000.f;
 
-			bool c1 = !check_ground(player.x + xx*2, player.y + 0.1f, player.z + zz*2);
+			bool c1 = !check_ground(player.x + xx * 2, player.y + 0.1f, player.z + zz * 2);
 			bool c2 = !check_ground(player.x + xx * 2, player.y + 1.1f, player.z + zz * 2);
 
 			//printf("%d %d\n", c1, c2);
@@ -261,17 +267,18 @@ namespace Player
 			}
 
 		}
+		if (sup_pos) {
+			if (player.acs > 0) {
+				float player_new_y = player.y + player.acs * d_time / 1000.f;
 
-		if (player.acs > 0) {
-			float player_new_y = player.y + player.acs * d_time / 1000.f;
-
-			if (check_ground(player.x, player_new_y + 1, player.z)) {
-				player.y = (float)((int)player_new_y) + 2.f - player_h;
-				//player.acs = 0;
-				player.on_ground = false;
+				if (check_ground(player.x, player_new_y + 1, player.z)) {
+					player.y = (float)((int)player_new_y) + 2.f - player_h;
+					//player.acs = 0;
+					player.on_ground = false;
+				}
+				else
+					player.y = player_new_y;
 			}
-			else
-				player.y = player_new_y;
 		}
 
 		if (change_rotation) {
