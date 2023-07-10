@@ -1,10 +1,10 @@
 #pragma once
-#include "main.h"
+#include "Main.h"
 #ifndef MRE
 #include <SFML/Graphics/Texture.hpp>
 #endif // !MRE
 
-const int s_w = 240, s_h = 320;
+
 
 
 

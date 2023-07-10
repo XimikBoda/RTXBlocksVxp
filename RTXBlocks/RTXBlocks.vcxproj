@@ -151,7 +151,8 @@
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="mainPc.cpp" />
     <ClCompile Include="miniz.c" />
     <ClCompile Include="PacketMaker.cpp" />
     <ClCompile Include="PacketOpener.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Sock.cpp" />
+    <ClCompile Include="T2Input.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="UUID.cpp" />
     <ClCompile Include="World.cpp" />
@@ -170,7 +172,7 @@
     <ClInclude Include="collisions.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="main.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="miniz.h" />
     <ClInclude Include="PacketMaker.h" />
     <ClInclude Include="PacketOpener.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Sock.h" />
+    <ClInclude Include="T2Input.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="UUID.h" />
     <ClInclude Include="World.h" />

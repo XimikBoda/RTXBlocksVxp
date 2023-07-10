@@ -8,9 +8,9 @@
 #include <imgui_internal.h>
 static std::string chat_text;
 #else
-#include"../RTXBlocksVxp/main.h"
-extern GameState gameState;
+#include "vmgraph.h"
 #endif // !MRE
+extern GameState gameState;
 const int chat_lines = 10;
 const int ch_in_w = s_w / 6;
 
@@ -24,6 +24,10 @@ static int down_pos = s_h;
 
 extern int input_cursor_x, input_cursor_y;
 
+#ifndef MRE
+int vm_get_tick_count();
+void vm_graphic_fill_rect(unsigned char* buf, int x, int y, int w, int h, unsigned short c1, unsigned short c2);
+#endif
 
 namespace Chat
 {
@@ -48,7 +52,7 @@ namespace Chat
 		}
 		ImGui::End();
 	}
-#else
+#endif
 
 
 	static int min(int a, int b) {
@@ -58,7 +62,7 @@ namespace Chat
 	void draw_input(unsigned short* buf) {
 		int len = input_text_len + 1;
 		int lines = (len) / ch_in_w + 1;
-		vm_graphic_fill_rect((VMUINT8*)buf, 0, s_h - lines * 11, s_w, lines * 11, 0, 0);
+		vm_graphic_fill_rect((unsigned char*)buf, 0, s_h - lines * 11, s_w, lines * 11, 0, 0);
 		for (int i = 0; i < lines; ++i)
 			Render::draw_text_white_by_len(buf, 0, s_h - lines * 11 + i * 11, input_text_ + i * ch_in_w, min(ch_in_w, len - (i * ch_in_w)));
 		input_cursor_y = (s_h - 11) / 11;
@@ -89,7 +93,6 @@ namespace Chat
 				input_text[input_text_len++] = ch;
 		}
 	}
-#endif // !MRE
 	static void new_line() {
 		memmove(chat_text_, chat_text_ + ch_in_w, ch_in_w * (chat_lines - 1));
 		memmove(chat_text_times, chat_text_times + 1, 4 * (chat_lines - 1));

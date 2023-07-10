@@ -1,6 +1,6 @@
 #include "Render.h"
 #include "World.h"
-#include "main.h"
+#include "Main.h"
 #include <cmath>
 #include "Protocol.h"
 #include "Player.h"
@@ -18,19 +18,14 @@ sf::Uint8* pixels;
 extern VMUINT16* layer_bufs[2];
 #endif // !MRE
 
-#define VM_COLOR_888_TO_565(r, g, b)	(((r & 0xf8) + ((g & 0xe0) >> 5)) << 8) + ((g & 0x1c) << 3) + (b >> 3)
-const unsigned short tr_color = VM_COLOR_888_TO_565(255, 0, 255);
 
 extern int render_c;
 
-unsigned short* main_canvas_buff;
-int_fixed* main_deep_buff;
+extern unsigned short* main_canvas_buff;
+extern int_fixed* main_deep_buff;
 
-unsigned short* main_canvas_buff2;
-int_fixed* main_deep_buff2;
-
-unsigned short* second_canvas_buff;
-float* second_deep_buff;
+extern unsigned short* main_canvas_buff2;
+extern int_fixed* main_deep_buff2;
 
 extern entity temp[100];
 extern int entity_info_count;
@@ -81,17 +76,17 @@ namespace Render {
 
 	void init() {
 #ifndef MRE
-		main_canvas_buff = (unsigned short*)malloc(s_w * s_h * 2);
-		main_deep_buff = (int_fixed*)malloc(s_w * s_h * 4);
-		main_canvas_buff2 = (unsigned short*)malloc(s_w * s_h * 2);
-		main_deep_buff2 = (int_fixed*)malloc(s_w * s_h * 4);
-		second_canvas_buff = (unsigned short*)malloc(s_w * s_h * 2);
-		second_deep_buff = (float*)malloc(s_w * s_h * 4);
+		//main_canvas_buff = (unsigned short*)malloc(s_w * s_h * 2);
+		//main_deep_buff = (int_fixed*)malloc(s_w * s_h * 4);
+		//main_canvas_buff2 = (unsigned short*)malloc(s_w * s_h * 2);
+		//main_deep_buff2 = (int_fixed*)malloc(s_w * s_h * 4);
+		//second_canvas_buff = (unsigned short*)malloc(s_w * s_h * 2);
+		//second_deep_buff = (float*)malloc(s_w * s_h * 4);
 		pixels = (sf::Uint8*)malloc(s_w * s_h * 4);
 #else
-		main_canvas_buff = (unsigned short*)(layer_bufs[0]);
-		main_deep_buff = (int_fixed*)vm_malloc(s_w * s_h * 4);
-		main_deep_buff2 = (int_fixed*)vm_malloc(s_w * s_h * 4);
+		//main_canvas_buff = (unsigned short*)(layer_bufs[0]);
+		//main_deep_buff = (int_fixed*)vm_malloc(s_w * s_h * 4);
+		//main_deep_buff2 = (int_fixed*)vm_malloc(s_w * s_h * 4);
 #endif // !MRE
 
 	}
@@ -128,7 +123,7 @@ namespace Render {
 		}
 	}
 	void draw_text_white_by_len(unsigned short* buf, int x, int y, const char* str, int len) {
-		for (int ci = 0; ci<len; ++ci) {
+		for (int ci = 0; ci < len; ++ci) {
 			const unsigned char* font_ch = ProFont6x11 + 5 + 12 * str[ci] + 1;
 			//unsigned short textcolor = main_text[y][x].textcolor, backcolor = main_text[y][x].backcolor;
 			//if (main_text[y][x].flgs & 1)
@@ -295,8 +290,8 @@ namespace Render {
 		float l13 = sqrt(len(x1, y1, x3, y3));
 		float l24 = sqrt(len(x2, y2, x4, y4));
 		float l34 = sqrt(len(x3, y3, x4, y4));
-		int maxy = (l13 > l24 ? l13 : l24)+10;
-		int maxx = (l12 > l34 ? l12 : l34)+10;
+		int maxy = (l13 > l24 ? l13 : l24) + 10;
+		int maxx = (l12 > l34 ? l12 : l34) + 10;
 
 
 
@@ -431,7 +426,7 @@ namespace Render {
 				{
 					player_info* pi = PlayerInfo::get_find_by_uuid(&ent.uuid);
 					vertex2fd nick_2d = get2d({ x, y + 2.2f, z }, camera_c);
-					if (pi&& nick_2d.d>=0) {
+					if (pi && nick_2d.d >= 0) {
 						draw_text_white(buf_i, nick_2d.x - strlen(pi->nick) * 3, nick_2d.y, pi->nick);
 					}
 				}
@@ -444,8 +439,10 @@ namespace Render {
 	void render(sf::Texture& tex) {
 		sf::Image im;
 		long* p = (long*)pixels;
-		for (int i = 0; i < s_w * s_h; ++i)
-			p[i] = 0xFF000000 | VM_COLOR_565_TO_888(main_canvas_buff[i]);
+		for (int i = 0; i < s_w * s_h; ++i) {
+			unsigned short color = main_canvas_buff2[i] == tr_color ? main_canvas_buff[i] : main_canvas_buff2[i];
+			p[i] = 0xFF000000 | VM_COLOR_565_TO_888(color);
+		}
 		im.create(s_w, s_h, pixels);
 		tex.loadFromImage(im);
 	}
@@ -483,7 +480,8 @@ namespace Render {
 				ImGui::End();
 			}
 		}
-		{
+		if (render_c) {
+			render_c--;
 			float L = 3;
 			float nw = L * tan(camera.c / 2.f), nh = L * tan(camera.c * 2.f / 3.f);
 			float a = fmod(camera.a, 2 * pi), b = camera.b;
@@ -744,10 +742,10 @@ namespace Render {
 					buf_i[i] = VM_COLOR_888_TO_565(r, g, b);
 				}
 			}
-			second_render(buf_i, hbuf_i);
+			//second_render(buf_i, hbuf_i);
 
+		}
 	}
-}
 #else
 	void main_render() {
 		if (pl_c) {
