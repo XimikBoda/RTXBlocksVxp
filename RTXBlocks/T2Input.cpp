@@ -2,6 +2,11 @@
 #include "Profont6x11.h"
 #include "Chat.h"
 #include "Keyboard.h"
+#ifdef MRE
+#include "vmgraph.h"
+#include "string.h"
+#endif // MRE
+
 
 const int char_width = pro_char_width, char_height = pro_char_height;
 
@@ -16,14 +21,16 @@ void vm_graphic_fill_rect(unsigned char* buf_, int x, int y, int w, int h, unsig
 		for (int i = std::max(y, 0); i < std::min(y + h, s_h); ++i)
 			buf[j + i * s_w] = c1;
 }
+#else
+static int abs(int a) {
+	return a < 0 ? -a : a;
+}
 #endif // !MRE
 
 
 int input_cursor_x = 0, input_cursor_y = 0;
 
-//static int abs(int a){
-//	return a<0?-a:a;
-//}
+
 const char* normal_keyboard[10][10] =
 {
 	{"0", " ", "_", "\\", "/", "=", ":", ";", "<", ">"},

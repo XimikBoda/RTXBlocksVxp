@@ -55,16 +55,16 @@ void main_timer(int tid) {
 }
 
 void read_from_file_to_addr(const char* path_, void** addr) {
-	char path[50];
-	printf(path, "e:\\RTXBlocks\\%s", path_);
-	VMWCHAR wstr[50];
-	vm_gb2312_to_ucs2(wstr, 50, (VMSTR)path);
+	char path[200];
+	sprintf(path, "e:\\RTXBlocks\\%s", path_);
+	VMWCHAR wstr[200];
+	vm_gb2312_to_ucs2(wstr, 200, (VMSTR)path);
 	VMUINT red = 0, size = 0;
 
-	VMFILE f = vm_file_open(wstr, MODE_READ, 1);
+	VMFILE f = vm_file_open(wstr, MODE_READ, 1);//MODE_READ
 	if (f < 0) {
 		char tmp[100] = "";
-		sprintf("%s not found", path);
+		//sprintf("%s not found", path);
 		show_error_and_exit("Some file not found");
 		return;
 	}

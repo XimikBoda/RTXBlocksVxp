@@ -13,6 +13,11 @@
 #include "Keyboard.h"
 #include "Entity.h"
 #include "T2Input.h"
+#ifdef MRE
+#include "vmstdlib.h"
+#include "string.h"
+#endif // MRE
+
 
 T2Input t2input;
 
