@@ -1,7 +1,13 @@
 #include "../RTXBlocks/Sock.h"
 #include "../RTXBlocks/Protocol.h"
-#include "main.h"
 #include "vmsock.h"
+//#include "vmstdlib.h"
+#include "string.h"
+//#include <cstdlib>
+
+extern "C" int rand();
+
+void show_error_and_exit(const char* text);
 
 unsigned char* tcp_in_buf = 0, * tcp_out_buf = 0;
 int tcp_in_buf_pos = 0, tcp_out_buf_pos = 0;

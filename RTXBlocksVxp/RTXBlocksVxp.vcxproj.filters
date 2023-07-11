@@ -18,7 +18,7 @@
     <ClCompile Include="c_fix.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="mainVxp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\RTXBlocks\Keyboard.cpp">
@@ -69,7 +69,10 @@
     <ClCompile Include="..\RTXBlocks\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="T2Input.cpp">
+    <ClCompile Include="..\RTXBlocks\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RTXBlocks\T2Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,16 +83,10 @@
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\RTXBlocks\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="T2Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

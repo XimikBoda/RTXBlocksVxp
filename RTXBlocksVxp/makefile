@@ -9,7 +9,9 @@ GCC_PARAM = -fno-exceptions -fno-non-call-exceptions -D__MRE_COMPILER_GCC__ $(SH
 GPP_PARAM = -fno-threadsafe-statics -fdata-sections -ffunction-sections $(SHARED_PARAM)
 
 LINK_LIB = -l:percommon.a -l:pertcp.a -l:persensor.a -l:persmsper.a -l:perbitstream.a -l:percontact.a -l:permms.a -l:persmsmng.a -l:peraudio.a -l:percallout.a -l:percam.a -l:perfile.a -l:perhttp.a -l:persim.a -l:perrecord.a -l:persmssp.a -l:perlbs.a -l:perpro.a -l:pervideo.a -l:perxml.a -l:persec.a -l:persysstorage.a -l:perpayment.a -l:perbt.a -l:perpn.a -l:perudp.a -l:persysfile.a -l:persso.a 
-LINK_PARAM = -fno-threadsafe-statics -Wl,--gc-sections -Wl,--print-gc-sections -fpic -fpcc-struct-return -pie -lm -T "$(MRE_SDK)\lib\MRE30\armgcc\scat.ld"
+LINK_PARAM = -fno-threadsafe-statics -Wl,--gc-sections  -fpic -fpcc-struct-return -pie -lm -T "$(MRE_SDK)\lib\MRE30\armgcc\scat.ld"
+
+#-Wl,--print-gc-sections
 
 PROJECT_NAME = RTXBlocksVxp
 
@@ -24,15 +26,16 @@ build:
 	$(GCC) $(GCC_PARAM) -c $(CURDIR)\c_fix.c -o $(CURDIR)\arm\c_fix.o
 	$(GCC) $(GCC_PARAM) -c $(CURDIR)\..\RTXBlocks\miniz.c -o $(CURDIR)\arm\miniz.o
 
-	$(GPP) $(GPP_PARAM) -c $(CURDIR)\main.cpp -o $(CURDIR)\arm\main.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\mainVxp.cpp -o $(CURDIR)\arm\mainVxp.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Sock.cpp -o $(CURDIR)\arm\Sock.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Main.cpp -o $(CURDIR)\arm\Main.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Protocol.cpp -o $(CURDIR)\arm\Protocol.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketMaker.cpp -o $(CURDIR)\arm\PacketMaker.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PacketOpener.cpp -o $(CURDIR)\arm\PacketOpener.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\World.cpp -o $(CURDIR)\arm\World.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Render.cpp -o $(CURDIR)\arm\Render.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Log.cpp -o $(CURDIR)\arm\Log.o
-	$(GPP) $(GPP_PARAM) -c $(CURDIR)\T2Input.cpp -o $(CURDIR)\arm\T2Input.o
+	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\T2Input.cpp -o $(CURDIR)\arm\T2Input.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\BlockPalette.cpp -o $(CURDIR)\arm\BlockPalette.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\PlayerInfo.cpp -o $(CURDIR)\arm\PlayerInfo.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Player.cpp -o $(CURDIR)\arm\Player.o
@@ -43,7 +46,7 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\Entity.cpp -o $(CURDIR)\arm\Entity.o
 
 #	Link app
-	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(CURDIR)\arm\Render.o $(CURDIR)\arm\Log.o $(CURDIR)\arm\Entity.o $(CURDIR)\arm\T2Input.o $(LINK_LIB) $(LINK_PARAM)
+	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\mainVxp.o $(CURDIR)\arm\Main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o $(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(CURDIR)\arm\Render.o $(CURDIR)\arm\Log.o $(CURDIR)\arm\Entity.o $(CURDIR)\arm\T2Input.o $(LINK_LIB) $(LINK_PARAM)
 
 #	Pack resource to app 
 	"$(MRE_SDK)\tools\ResEditor\CmdShell.exe" pack -silent -resolution 240x320 -o "$(CURDIR)\$(PROJECT_NAME).pkd" -e AXF "$(CURDIR)\$(PROJECT_NAME).vcproj" "$(CURDIR)\$(PROJECT_NAME).axf"
@@ -51,5 +54,6 @@ build:
 #	Add tag infromation 
 	"$(MRE_SDK)\tools\PackDigist.exe" "$(CURDIR)\$(PROJECT_NAME).vcproj" $(APP_NAME) "0.1.0" $(AUTHOR) "3000" "NotSupportBg" "Not Support rotate" $(APP_NAME) $(APP_NAME) $(APP_NAME) "1234567890" "content" " TCP Sensor SMS(person) BitStream Contact MMS SMSMng Audio Call Camera File HTTP SIM card Record SMS(SP) LBS ProMng Video XML Sec SysStorage Payment BT PUSH UDP SysFile sso" "vxp" "GCC" "PKD" "UnCompress" "NoVPI" "Adaptable" "15728960" "UnSysMemAble" "    " "-1" "UNPUSH" "-1" ""  "UnAutoStart"  "UnTransferImg" "NoIdleShortcut"  $(CURDIR)\arm $(CURDIR)\build.log
 
+install:#temp
+	copy /y RTXBlocksVxp.vxp "G:\mre\271670312.vxp"
 
-#copy /y RTXBlocksVxp.vxp "G:\mre\271670312.vxp"

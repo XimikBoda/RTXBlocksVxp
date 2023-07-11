@@ -5,9 +5,11 @@
 
 unsigned char* tcp_in_buf = 0, * tcp_out_buf = 0;
 int tcp_in_buf_pos = 0, tcp_out_buf_pos = 0;
+unsigned int tcp_in_statistic = 0, tcp_out_statistic = 0;
 
 unsigned char* udp_in_buf = 0, * udp_out_buf = 0;
 int udp_in_buf_pos = 0, udp_out_buf_pos = 0;
+unsigned int udp_in_statistic = 0, udp_out_statistic = 0;
 
 static int tcp_handle = -1;
 static int udp_handle = -1;
@@ -43,7 +45,7 @@ namespace Sock
 			tcp_sock.setBlocking(0);
 			tcp_sock.receive(tcp_in_buf + tcp_in_buf_pos, tcp_in_buf_size - tcp_in_buf_pos - 100, rec);
 			if (rec > 0)
-				tcp_in_buf_pos += rec;
+				tcp_in_buf_pos += rec, tcp_in_statistic += rec;
 
 			if (tcp_out_buf_pos > 0) {
 				size_t snd = 0;
@@ -53,6 +55,7 @@ namespace Sock
 					if (snd != tcp_out_buf_pos)
 						memmove(tcp_out_buf, tcp_out_buf + snd, tcp_out_buf_pos);
 					tcp_out_buf_pos -= snd;
+					tcp_out_statistic += snd;
 				}
 			}
 	}
@@ -69,7 +72,7 @@ namespace Sock
 			udp_sock.setBlocking(0);
 			udp_sock.receive(udp_in_buf + udp_in_buf_pos, udp_in_buf_size - udp_in_buf_pos - 100, rec, in_addr, in_port);
 			if (rec > 0)
-				udp_in_buf_pos += rec;
+				udp_in_buf_pos += rec, udp_in_statistic += rec;
 
 			if (udp_out_buf_pos > 0) {
 				int snd = 0;
@@ -81,6 +84,7 @@ namespace Sock
 					if (snd != udp_out_buf_pos)
 						memmove(udp_out_buf, udp_out_buf + snd, udp_out_buf_pos);
 					udp_out_buf_pos -= snd;
+					udp_out_statistic += snd;
 				}
 			}
 		//}

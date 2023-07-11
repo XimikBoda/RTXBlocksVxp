@@ -167,6 +167,7 @@
     <ClCompile Include="..\RTXBlocks\Chat.cpp" />
     <ClCompile Include="..\RTXBlocks\Entity.cpp" />
     <ClCompile Include="..\RTXBlocks\Keyboard.cpp" />
+    <ClCompile Include="..\RTXBlocks\Main.cpp" />
     <ClCompile Include="..\RTXBlocks\miniz.c" />
     <ClCompile Include="..\RTXBlocks\PacketMaker.cpp" />
     <ClCompile Include="..\RTXBlocks\PacketOpener.cpp" />
@@ -174,14 +175,14 @@
     <ClCompile Include="..\RTXBlocks\PlayerInfo.cpp" />
     <ClCompile Include="..\RTXBlocks\Protocol.cpp" />
     <ClCompile Include="..\RTXBlocks\Render.cpp" />
+    <ClCompile Include="..\RTXBlocks\T2Input.cpp" />
     <ClCompile Include="..\RTXBlocks\Time.cpp" />
     <ClCompile Include="..\RTXBlocks\UUID.cpp" />
     <ClCompile Include="..\RTXBlocks\World.cpp" />
     <ClCompile Include="c_fix.c" />
     <ClCompile Include="Log.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainVxp.cpp" />
     <ClCompile Include="Sock.cpp" />
-    <ClCompile Include="T2Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="makefile" />
@@ -190,8 +191,6 @@
   <ItemGroup>
     <ClInclude Include="..\RTXBlocks\Keyboard.h" />
     <ClInclude Include="Log.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="T2Input.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\RTXBlocksVxp.res.xml" />
