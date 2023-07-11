@@ -9,6 +9,7 @@
 static std::string chat_text;
 #else
 #include "vmgraph.h"
+#include "string.h"
 #endif // !MRE
 extern GameState gameState;
 const int chat_lines = 10;

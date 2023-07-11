@@ -1,9 +1,11 @@
 #include "../RTXBlocks/Sock.h"
 #include "../RTXBlocks/Protocol.h"
 #include "vmsock.h"
+//#include "vmstdlib.h"
 #include "string.h"
-#include <cstdlib>
+//#include <cstdlib>
 
+extern "C" int rand();
 
 void show_error_and_exit(const char* text);
 

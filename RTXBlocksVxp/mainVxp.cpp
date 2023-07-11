@@ -12,20 +12,8 @@
 #include <cstdlib>
 
 #include "../RTXBlocks/Main.h"
-#include "../RTXBlocks/Sock.h"
-#include "../RTXBlocks/Protocol.h"
-#include "../RTXBlocks/PacketMaker.h"
-#include "../RTXBlocks/PacketOpener.h"
-#include "../RTXBlocks/World.h"
-#include "../RTXBlocks/Render.h"
-#include "../RTXBlocks/BlockPalette.h"
-#include "../RTXBlocks/PlayerInfo.h"
-#include "../RTXBlocks/Player.h"
-#include "../RTXBlocks/Time.h"
-#include "../RTXBlocks/Chat.h"
 #include "../RTXBlocks/Keyboard.h"
 #include "Log.h"
-//#include "../RTXBlocks/Profont6x11.h"
 
 VMUINT16* layer_bufs[2] = { 0,0 };
 VMINT layer_hdls[2] = { -1,-1 };
@@ -52,16 +40,17 @@ void main_timer(int tid) {
 	Main::game_loop(d_time);
 	vm_graphic_flush_layer(layer_hdls, 2);
 	Keyboard::update();
+	Log::init();
 }
 
 void read_from_file_to_addr(const char* path_, void** addr) {
-	char path[200];
+	char path[100];
 	sprintf(path, "e:\\RTXBlocks\\%s", path_);
-	VMWCHAR wstr[200];
+	VMWCHAR wstr[100];
 	vm_gb2312_to_ucs2(wstr, 200, (VMSTR)path);
 	VMUINT red = 0, size = 0;
 
-	VMFILE f = vm_file_open(wstr, MODE_READ, 1);//MODE_READ
+	VMFILE f = vm_file_open(wstr, MODE_READ, 1);
 	if (f < 0) {
 		char tmp[100] = "";
 		//sprintf("%s not found", path);
