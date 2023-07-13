@@ -4,7 +4,7 @@ GPP = $(GCC_ARM_NONE_EABI)\arm-none-eabi-g++
 INCLUDES = -I "$(MRE_SDK)\include" -I "$(CURDIR)\include" -I "$(CURDIR)\ResID" -I "$(CURDIR)"
 DEFINES = -D _MINIGUI_LIB_ -D _USE_MINIGUIENTRY -D _NOUNIX_ -D _FOR_WNC -D __MRE_SDK__ -D   __MRE_VENUS_NORMAL__  -D  __MMI_MAINLCD_240X320__ -D MRE -D GCC
 
-SHARED_PARAM = -c -fpic -march=armv5te -fvisibility=hidden -O2 -mlittle-endian $(INCLUDES) $(DEFINES)
+SHARED_PARAM = -c -fpic -march=armv5te -fvisibility=hidden -O3 -mlittle-endian $(INCLUDES) $(DEFINES)
 GCC_PARAM = -fno-exceptions -fno-non-call-exceptions -D__MRE_COMPILER_GCC__ $(SHARED_PARAM)
 GPP_PARAM = -fno-threadsafe-statics -fdata-sections -ffunction-sections $(SHARED_PARAM)
 

@@ -40,7 +40,6 @@ void main_timer(int tid) {
 	Main::game_loop(d_time);
 	vm_graphic_flush_layer(layer_hdls, 2);
 	Keyboard::update();
-	Log::init();
 }
 
 void read_from_file_to_addr(const char* path_, void** addr) {
@@ -79,6 +78,8 @@ void vm_main(void) {
 
 	main_deep_buff = (int_fixed*)vm_malloc(s_w * s_h * 4);
 	main_deep_buff2 = (int_fixed*)vm_malloc(s_w * s_h * 4);
+
+	Log::init();
 }
 
 
