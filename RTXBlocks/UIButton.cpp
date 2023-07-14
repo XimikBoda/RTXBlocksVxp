@@ -1,5 +1,6 @@
 #include "UIButton.h"
 #include "Render.h"
+#include "string.h"
 
 UIButton::UIButton(int x, int y, int w, int h, const char* text)
 {

@@ -1,6 +1,8 @@
+#include "Log.h"
 #include "vmsys.h"
 #include "vmio.h"
 #include "vmchset.h"
+#include "vmstdlib.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -18,6 +20,10 @@ extern "C" void LOGLOG(const char* file, const int line, const char* data) {
 	vm_file_write(f, fSTR, strlen(fSTR), &p);
 	vm_file_commit(f);
 }
+extern "C" void log_init_from_c() {
+	Log::init();
+}
+
 namespace Log {
 	void init() {
 		VMWCHAR s[50];

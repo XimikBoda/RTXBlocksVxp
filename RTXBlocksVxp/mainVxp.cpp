@@ -40,7 +40,7 @@ void main_timer(int tid) {
 	Main::game_loop(d_time);
 	vm_graphic_flush_layer(layer_hdls, 2);
 	Keyboard::update();
-	Log::init();
+	//Log::init();
 }
 
 void read_from_file_to_addr(const char* path_, void** addr) {
