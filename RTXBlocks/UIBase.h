@@ -1,8 +1,12 @@
 #pragma once
+
+const unsigned short gray_color = 0x632C;
+
 class UIBase
 {
 public:
-	virtual void Draw(unsigned short* buf);
-	virtual void KeyboardEvent(int event, int keycode);
+	bool isFocused = false;
+	virtual void Draw(unsigned short* buf) = 0;
+	virtual void KeyboardEvent(int event, int keycode) {};
 };
 
