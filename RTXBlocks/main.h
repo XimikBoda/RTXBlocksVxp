@@ -26,6 +26,7 @@ namespace Main {
 }
 
 enum GameState {
+	UI,
 	PlayS,
 	ChatS
 };

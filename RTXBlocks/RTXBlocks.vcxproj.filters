@@ -69,7 +69,13 @@
     <ClCompile Include="T2Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigMenu.cpp">
+    <ClCompile Include="UIConfigMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -131,7 +137,13 @@
     <ClInclude Include="T2Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigMenu.h">
+    <ClInclude Include="UIConfigMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

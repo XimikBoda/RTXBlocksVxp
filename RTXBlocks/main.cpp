@@ -13,6 +13,8 @@
 #include "Keyboard.h"
 #include "Entity.h"
 #include "T2Input.h"
+#include "UIEngine.h"
+#include "UIConfigMenu.h"
 #ifdef MRE
 #include "vmstdlib.h"
 #include "string.h"
@@ -20,6 +22,9 @@
 
 
 T2Input t2input;
+UIEngine uiengine;
+UIConfigMenu uiconfigMenu;
+
 
 int render_c = 0;
 unsigned short* steve;
@@ -34,7 +39,7 @@ int_fixed* main_deep_buff2;
 extern unsigned int tcp_in_statistic, tcp_out_statistic;
 extern unsigned int udp_in_statistic, udp_out_statistic;
 
-GameState gameState = GameState::PlayS;
+GameState gameState = GameState::UI;
 
 extern Player_s player;
 
@@ -59,10 +64,11 @@ namespace Main {
 		PacketMaker::init();
 		PacketOpener::init();
 		World::init();
+
 		t2input.init();
+		uiengine.init();
 
-		Protocol::connect();
-
+		//Protocol::connect();
 		
 		read_from_file_to_addr("blocks_texture.bin", (void**)&blocks);
 		read_from_file_to_addr("steve.bin", (void**)&steve);
@@ -74,6 +80,8 @@ namespace Main {
 		Render::init();
 		t2input.scr_buf = (unsigned char*)main_canvas_buff2;
 		t2input.layer_handle = layer_hdls[1];
+
+		uiengine.PushUI((UIBase*)&uiconfigMenu);
 	}
 
 	void deinit_all() {
@@ -86,37 +94,44 @@ namespace Main {
 		if (d_time > 200)
 			d_time = 200;
 		Render::clear_to_transparent_color(main_canvas_buff2);
+		if (gameState == PlayS || gameState == ChatS) {
 
-		Protocol::update();
-		Player::update(d_time);
-		Render::main_render();
+			Protocol::update();
+			Player::update(d_time);
+			Render::main_render();
 
-		memcpy(main_deep_buff2, main_deep_buff, s_w * s_h * 4);
-		Render::second_render(main_canvas_buff2, main_deep_buff2);
-		if (gameState == ChatS)
-			Chat::draw_input(main_canvas_buff2);
-		Chat::draw_chat(main_canvas_buff2);
+			memcpy(main_deep_buff2, main_deep_buff, s_w * s_h * 4);
+			Render::second_render(main_canvas_buff2, main_deep_buff2);
+			{
+				char tmp[300];
+				sprintf(tmp, "Fps: %d, dt: %d", (d_time ? 1000 / d_time : 0), d_time);
+				Render::draw_text_white(main_canvas_buff2, 0, 0, tmp);
+
+				sprintf(tmp, "TCP i/o: %dKB/%dKB, UDP i/o: %dKB/%dKB", tcp_in_statistic / 1024, tcp_out_statistic / 1024,
+					udp_in_statistic / 1024, udp_out_statistic / 1024);
+				Render::draw_text_white(main_canvas_buff2, 0, 11, tmp);
+
+				//sprintf(tmp, "x: %f, y: %f, z:%f", player.x + float(start_chunk_x * 16), 
+				//	player.y + float(start_chunk_y * 16), player.z + float(start_chunk_z * 16));
+				//Render::draw_text_white(layer_bufs[1], 0, 22, tmp);
+			}
+			if (gameState == ChatS)
+				Chat::draw_input(main_canvas_buff2);
+			Chat::draw_chat(main_canvas_buff2);
+		}
+		else if (gameState == UI) {
+			uiengine.Draw(main_canvas_buff);
+		}
 		t2input.draw();
 		Keyboard::update();
-
-		{
-			char tmp[300];
-			//sprintf(tmp, "Fps: %.1f, dt: %d", (d_time? 1000.f / float(d_time): NAN), d_time);
-			sprintf(tmp, "Fps: %d, dt: %d", (d_time ? 1000 / d_time : 0), d_time);
-			Render::draw_text_white(main_canvas_buff2, 0, 0, tmp);
-
-			sprintf(tmp, "TCP i/o: %dKB/%dKB, UDP i/o: %dKB/%dKB", tcp_in_statistic / 1024, tcp_out_statistic / 1024,
-				udp_in_statistic / 1024, udp_out_statistic / 1024);
-			Render::draw_text_white(main_canvas_buff2, 0, 11, tmp);
-
-			//sprintf(tmp, "x: %f, y: %f, z:%f", player.x + float(start_chunk_x * 16), 
-			//	player.y + float(start_chunk_y * 16), player.z + float(start_chunk_z * 16));
-			//Render::draw_text_white(layer_bufs[1], 0, 22, tmp);
-		}
 	}
 
+		
+
 	void handle_keyevt(int event, int keycode) {
-		if (gameState == PlayS) {
+		if (gameState == UI) {
+			uiengine.KeyboardEvent(keycode, event);
+		}else if (gameState == PlayS) {
 			Keyboard::keyboard_event(keycode, event);
 			if (keycode == VM_KEY_STAR && event == VM_KEY_EVENT_UP)
 				gameState = ChatS;

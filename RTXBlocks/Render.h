@@ -49,8 +49,13 @@ namespace Render
 	void init();
 	void clear_to_transparent_color(unsigned short* buf);
 	void draw_text_white(unsigned short* buf, int x, int y, const char* str);
+	void draw_text_white_centered(unsigned short* buf, int x, int y, int w, const char* str);
 	void draw_text_white_by_len(unsigned short* buf, int x, int y, const char* str, int len);
 	void draw_text_white_with_black_by_len(unsigned short* buf, int x, int y, const char* str, int len);
+
+	void draw_fill_rect(unsigned short* buf, int x, int y, int w, int h, unsigned short color);
+	void draw_fill_rect_with_borders(unsigned short* buf, int x, int y, int w, int h, unsigned short fill_color, unsigned short border_color);
+
 	void texture_triangle_rasterezation(unsigned short* scr_buf, unsigned short* texture_buf, int t_w, float x1, float y1, float x2, float y2, float x3, float y3, float tx1, float ty1, float tx2, float ty2, float tx3, float ty3);
 #ifndef MRE
 	void render(sf::Texture& tex);
