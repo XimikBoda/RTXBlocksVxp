@@ -20,7 +20,6 @@
 #include "string.h"
 #endif // MRE
 
-
 T2Input t2input;
 UIEngine uiengine;
 UIConfigMenu uiconfigMenu;
@@ -130,7 +129,7 @@ namespace Main {
 
 	void handle_keyevt(int event, int keycode) {
 		if (gameState == UI) {
-			uiengine.KeyboardEvent(keycode, event);
+			uiengine.KeyboardEvent(event, keycode);
 		}else if (gameState == PlayS) {
 			Keyboard::keyboard_event(keycode, event);
 			if (keycode == VM_KEY_STAR && event == VM_KEY_EVENT_UP)
@@ -145,5 +144,12 @@ namespace Main {
 
 	void handle_penevt(int event, int x, int y) {
 		t2input.handle_penevt(event, x, y);
+	}
+
+	void text_event(const char* str) {
+		if (gameState == UI)
+			uiengine.TextEvent(str);
+		else if (gameState == ChatS)
+			Chat::chat_input(str);
 	}
 }

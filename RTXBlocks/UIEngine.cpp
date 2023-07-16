@@ -21,6 +21,11 @@ void UIEngine::KeyboardEvent(int event, int keycode) {
 		uistack[uistack_size-1]->KeyboardEvent(event, keycode);
 }
 
+void UIEngine::TextEvent(const char* str){
+	if (uistack_size && uistack[uistack_size - 1])
+		uistack[uistack_size - 1]->TextEvent(str);
+}
+
 void UIEngine::Draw(unsigned short* buf) {
 	if (uistack_size && uistack[uistack_size-1])
 		uistack[uistack_size-1]->Draw(buf);

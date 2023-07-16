@@ -13,6 +13,7 @@ public:
 	void PushUI(UIBase* ui);
 	void PopUI();
 	void KeyboardEvent(int event, int keycode);
+	void TextEvent(const char* str);
 	void Draw(unsigned short* buf);
 };
 

@@ -23,6 +23,7 @@ namespace Main {
 
 	void handle_keyevt(int event, int keycode);
 	void handle_penevt(int event, int x, int y);
+	void text_event(const char* str);
 }
 
 enum GameState {

@@ -38,7 +38,7 @@ unsigned short r_tcp_port = 25501;
 unsigned short r_udp_port = 25502;
 const char* s_ip = "127.0.0.1";//"MY-PRETTY";
 unsigned short s_port = 25565;
-const char* Nickname = "RTX";
+char Nickname[17] = "RTX";
 int my_id = -1;
 
 bool play = 0;

@@ -167,6 +167,7 @@
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIEngine.cpp" />
+    <ClCompile Include="UITextBox.cpp" />
     <ClCompile Include="UUID.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="Time.h" />
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIEngine.h" />
+    <ClInclude Include="UITextBox.h" />
     <ClInclude Include="UUID.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

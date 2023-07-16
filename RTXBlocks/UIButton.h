@@ -1,14 +1,17 @@
 #pragma once
 #include "UIBase.h"
 
-class UIButton : UIBase
+typedef void (UIBase::*ActOfClick)();
+
+class UIButton : public UIBase
 {
 public:
-	int x = 0, y = 0;
-	int w = 20, h = 20;
 	char text[200] = "";
 
-	UIButton(int x, int y, int w, int h, const char* text);
-	void Draw(unsigned short* buf) override;
+	ActOfClick actOfClick = 0;
+
+	UIButton(UIBase* parent, int x, int y, int w, int h, const char* text, ActOfClick actOfClick);
+	void QDraw(unsigned short* buf) override;
+	void OKClick() override;
 };
 

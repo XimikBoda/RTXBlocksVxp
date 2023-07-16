@@ -262,7 +262,8 @@ void T2Input::handle_penevt(int event, int x, int y) {
 }
 
 void T2Input::send_c(const char* str) {
-	Chat::chat_input(str);
+	Main::text_event(str);
+	//Chat::chat_input(str);
 	//telnet.send_data((char*)str, strlen(str));
 }
 
@@ -565,13 +566,13 @@ void T2Input::draw() {
 		case SECOND_CLICK:
 			w = char_width * 3 + 5;
 			h = char_height * 4;
-			x = input_cursor_x * char_width;
+			x = input_cursor_x;
 			if (x > s_w - h)
 				x = s_w - h;
-			if (s_h - (input_cursor_y + 1) * char_height > h)
-				y = (input_cursor_y + 1) * char_height;
+			if (s_h - (input_cursor_y + char_height) > h)
+				y = input_cursor_y + char_height;
 			else
-				y = input_cursor_y * char_height - h;
+				y = input_cursor_y - h;
 			vm_graphic_fill_rect(scr_buf, x, y, w, h, gray_color, gray_color);
 			for (int k = 0; k < 10; ++k) {
 				int m_x = x + 1 + (char_width + 1) * ((k - 1) % 3), m_y = ((k - 1) / 3) * char_height + y;
@@ -583,13 +584,13 @@ void T2Input::draw() {
 		case SET_MENU:
 			w = char_width * 3 * 5 + 5;
 			h = char_height * 4;
-			x = input_cursor_x * char_width;
+			x = input_cursor_x;
 			if (x > s_w - h)
 				x = s_w - h;
-			if (s_h - (input_cursor_y + 1) * char_height > h)
-				y = (input_cursor_y + 1) * char_height;
+			if (s_h - (input_cursor_y + char_height) > h)
+				y = input_cursor_y + char_height;
 			else
-				y = input_cursor_y * char_height - h;
+				y = input_cursor_y - h;
 			vm_graphic_fill_rect(scr_buf, x, y, w, h, gray_color, gray_color);
 			for (int k = 0; k < 12; ++k) {
 				int m_x = 1 + (k % 3) * (char_width * 5 + 1), m_y = (k / 3) * char_height;
@@ -599,11 +600,11 @@ void T2Input::draw() {
 		case F_NUM:
 			w = char_width * 3 * 4 + 5;
 			h = char_height * 4;
-			x = input_cursor_x * char_width;
+			x = input_cursor_x;
 			if (x > s_w - h)
 				x = s_w - h;
-			if (s_h - (input_cursor_y + 1) * char_height > h)
-				y = (input_cursor_y + 1) * char_height;
+			if (s_h - (input_cursor_y + char_height) > h)
+				y = input_cursor_y + char_height;
 			else
 				y = input_cursor_y * char_height - h;
 			vm_graphic_fill_rect(scr_buf, x, y, w, h, gray_color, gray_color);
@@ -615,25 +616,25 @@ void T2Input::draw() {
 		case CTRL:
 			w = char_width;
 			h = char_height;
-			x = input_cursor_x * char_width;
+			x = input_cursor_x;
 			if (x > s_w - h)
 				x = s_w - h;
 			if (s_h - (input_cursor_y + 1) * char_height > h)
 				y = (input_cursor_y + 1) * char_height;
 			else
-				y = input_cursor_y * char_height - h;
+				y = input_cursor_y - h;
 			draw_xy_str_color(x, y, 0xFFFF, gray_color, "^");
 			break;
 		case CTRL_SECOND_CLICK:
 			w = char_width * 2 * 3 + 5;
 			h = char_height * 4;
-			x = input_cursor_x * char_width;
+			x = input_cursor_x;
 			if (x > s_w - h)
 				x = s_w - h;
-			if (s_h - (input_cursor_y + 1) * char_height > h)
-				y = (input_cursor_y + 1) * char_height;
+			if (s_h - (input_cursor_y + char_height) > h)
+				y = input_cursor_y + char_height;
 			else
-				y = input_cursor_y * char_height - h;
+				y = input_cursor_y - h;
 			vm_graphic_fill_rect(scr_buf, x, y, w, h, gray_color, gray_color);
 			for (int k = 0; k < 10; ++k) {
 				int m_x = x + 1 + (char_width * 2 + 1) * ((k - 1) % 3), m_y = ((k - 1) / 3) * char_height + y;
