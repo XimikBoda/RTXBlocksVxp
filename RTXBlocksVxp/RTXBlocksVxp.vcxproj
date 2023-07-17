@@ -181,6 +181,7 @@
     <ClCompile Include="..\RTXBlocks\UIButton.cpp" />
     <ClCompile Include="..\RTXBlocks\UIConfigMenu.cpp" />
     <ClCompile Include="..\RTXBlocks\UIEngine.cpp" />
+    <ClCompile Include="..\RTXBlocks\UITextBox.cpp" />
     <ClCompile Include="..\RTXBlocks\UUID.cpp" />
     <ClCompile Include="..\RTXBlocks\World.cpp" />
     <ClCompile Include="c_fix.c" />

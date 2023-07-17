@@ -13,6 +13,7 @@ void UIConfigMenu::Draw(unsigned short* buf)
 	Render::draw_fill_rect(buf, 0, 0, s_w, s_h, 0x0000);
 
 	int y = 3;
+	int x = 5;
 
 	Render::draw_text_white_centered(buf, 0, y, s_w, "RTXBlocks");
 
@@ -23,23 +24,41 @@ void UIConfigMenu::Draw(unsigned short* buf)
 	y += 15;
 
 	nicknameInput.y = y;
-	nicknameInput.QDraw(buf);
 
 	y += 20;
 	Render::draw_text_white(buf, 5, y, "Relay server:");
 	y += 15;
-	Render::draw_text_white(buf, 5, y, "---------");
+
+	relayServerSelecter.y = y;
+
+	y += 17;
+
+	for (int i = 0, x = 5; i < 5; ++i, x += 5 + 14) {
+		UIBase* el = uiarray[2 + i];
+		el->y = y;
+		el->x = x;
+	}
 
 	y += 20;
 	Render::draw_text_white(buf, 5, y, "Minecraft server:");
 	y += 15;
-	Render::draw_text_white(buf, 5, y, "---------");
+
+	serverSelecter.y = y;
+
+	y += 17;
+
+	for (int i = 0, x = 5; i < 5; ++i, x += 5 + 14) {
+		UIBase* el = uiarray[8 + i];
+		el->y = y;
+		el->x = x;
+	}
 
 	y += 20;
 	//Render::draw_text_white(buf, 5, y, "(Play)");
 	startButton.y = y;
-	startButton.QDraw(buf);
 
+	for (int i = 0; i < sizeof(uiarray) / sizeof(uiarray[0]); ++i)
+		uiarray[i]->QDraw(buf);
 }
 
 void UIConfigMenu::KeyboardEvent(int event, int keycode)

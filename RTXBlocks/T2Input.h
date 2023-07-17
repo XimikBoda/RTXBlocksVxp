@@ -45,7 +45,7 @@ public:
 
 	int current_key;
 
-	int squares[8][2];
+	short squares[8][2];
 
 	int get_keycode(int x, int y);
 

@@ -1,12 +1,6 @@
 #include "vmsys.h"
+#include <stdio.h>
 #ifndef WIN32
-void* malloc(int size){
-	return vm_malloc(size);
-}
-void free(void*prt){
-	return vm_free(prt);
-}
-
 void _sbrk(){}
 void _write(){}
 void _close(){}

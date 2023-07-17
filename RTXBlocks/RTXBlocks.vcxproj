@@ -150,6 +150,7 @@
     <ClCompile Include="BlockPalette.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIComboBox.cpp" />
     <ClCompile Include="UIConfigMenu.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Chat.h" />
     <ClInclude Include="collisions.h" />
     <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIComboBox.h" />
     <ClInclude Include="UIConfigMenu.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Keyboard.h" />

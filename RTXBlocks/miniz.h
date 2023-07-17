@@ -585,10 +585,10 @@ typedef struct mz_dummy_time_t_tag
 #define MZ_MALLOC(x) NULL
 #define MZ_FREE(x) (void)x, ((void)0)
 #define MZ_REALLOC(p, x) NULL
-#elif MRE
-#define MZ_MALLOC(x) vm_malloc(x)
-#define MZ_FREE(x) vm_free(x)
-#define MZ_REALLOC(p, x) vm_realloc(p, x)
+//#elif MRE
+//#define MZ_MALLOC(x) vm_malloc(x)
+//#define MZ_FREE(x) vm_free(x)
+//#define MZ_REALLOC(p, x) vm_realloc(p, x)
 #else 
 #define MZ_MALLOC(x) malloc(x)
 #define MZ_FREE(x) free(x)

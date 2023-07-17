@@ -14,20 +14,30 @@ typedef void (**__init_array) (void);
 
 int __g_errno = 0;
 
+void* malloc(size_t size)
+{
+	return vm_malloc(size);
+}
+
+void free(void* ptr)
+{
+	vm_free(ptr);
+}
+
 void __cxa_pure_virtual()
 {
 	while (1);
 }
 
-int __cxa_guard_acquire(int* p)
-{
-	return 1;
-}
-
-void __cxa_guard_release(int* p)
-{
-	return;
-}
+//int __cxa_guard_acquire(int* p)
+//{
+//	return 1;
+//}
+//
+//void __cxa_guard_release(int* p)
+//{
+//	return;
+//}
 
 int* __errno()
 {
