@@ -11,7 +11,7 @@ GPP_PARAM = -fno-threadsafe-statics -fdata-sections -ffunction-sections $(SHARED
 LINK_LIB = -lstdc++ -l:percommon.a -l:pertcp.a -l:persensor.a -l:persmsper.a -l:perbitstream.a -l:percontact.a -l:permms.a -l:persmsmng.a -l:peraudio.a -l:percallout.a -l:percam.a -l:perfile.a -l:perhttp.a -l:persim.a -l:perrecord.a -l:persmssp.a -l:perlbs.a -l:perpro.a -l:pervideo.a -l:perxml.a -l:persec.a -l:persysstorage.a -l:perpayment.a -l:perbt.a -l:perpn.a -l:perudp.a -l:persysfile.a -l:persso.a 
 LINK_PARAM = -fno-threadsafe-statics -Wl,--gc-sections  -fpic -fpcc-struct-return --disable-libstdcxx-verbose -pie -lm -T "$(CURDIR)\scat.ld" 
 
-#-Wl,--print-gc-sections 
+#-Wl,--print-gc-sections -fexceptions
 
 PROJECT_NAME = RTXBlocksVxp
 

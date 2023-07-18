@@ -44,4 +44,14 @@ int fiprintf(FILE* fd, const char* format, ...) {
 
 	return(ret);
 }
+int sprintf(char* buffer, const char* format, ...) {
+	va_list aptr;
+	int ret;
+
+	va_start(aptr, format);
+	ret = vm_vsprintf(buffer, format, aptr);
+	va_end(aptr);
+
+	return(ret);
+}
 #endif

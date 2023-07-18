@@ -168,6 +168,8 @@
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIEngine.cpp" />
+    <ClCompile Include="UIRServerEdit.cpp" />
+    <ClCompile Include="UIServerEdit.cpp" />
     <ClCompile Include="UITextBox.cpp" />
     <ClCompile Include="UUID.cpp" />
     <ClCompile Include="World.cpp" />
@@ -195,6 +197,8 @@
     <ClInclude Include="Time.h" />
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIEngine.h" />
+    <ClInclude Include="UIRServerEdit.h" />
+    <ClInclude Include="UIServerEdit.h" />
     <ClInclude Include="UITextBox.h" />
     <ClInclude Include="UUID.h" />
     <ClInclude Include="World.h" />

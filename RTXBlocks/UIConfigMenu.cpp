@@ -26,10 +26,10 @@ void UIConfigMenu::Draw(unsigned short* buf)
 	nicknameInput.y = y;
 
 	y += 20;
-	Render::draw_text_white(buf, 5, y, "Relay server:");
+	Render::draw_text_white(buf, 5, y, "Minecraft server:");
 	y += 15;
 
-	relayServerSelecter.y = y;
+	serverSelecter.y = y;
 
 	y += 17;
 
@@ -40,10 +40,10 @@ void UIConfigMenu::Draw(unsigned short* buf)
 	}
 
 	y += 20;
-	Render::draw_text_white(buf, 5, y, "Minecraft server:");
+	Render::draw_text_white(buf, 5, y, "Relay server:");
 	y += 15;
 
-	serverSelecter.y = y;
+	relayServerSelecter.y = y;
 
 	y += 17;
 
@@ -54,7 +54,6 @@ void UIConfigMenu::Draw(unsigned short* buf)
 	}
 
 	y += 20;
-	//Render::draw_text_white(buf, 5, y, "(Play)");
 	startButton.y = y;
 
 	for (int i = 0; i < sizeof(uiarray) / sizeof(uiarray[0]); ++i)
@@ -86,7 +85,104 @@ void UIConfigMenu::KeyboardEvent(int event, int keycode)
 		}
 		break;
 	}
-	startButton.OKClick();
+}
+
+int& UIConfigMenu::ssCurId()
+{
+	return serverSelecter.cur_id;
+}
+
+int UIConfigMenu::ssGetLen()
+{
+	return minecraftServers.size();
+}
+
+const char* UIConfigMenu::ssGetEl(int id)
+{
+	return minecraftServers[id].get_name();
+}
+
+void UIConfigMenu::ssAdd()
+{
+	minecraftServers.push_back({"(new)"});
+	ssCurId() = ssGetLen() - 1;
+	ssEdit();
+}
+
+void UIConfigMenu::ssRemove()
+{
+	if (ssGetLen())
+		minecraftServers.erase(minecraftServers.begin() + ssCurId());
+}
+
+void UIConfigMenu::ssMoveUp()
+{
+	if (ssCurId() > 0) {
+		std::swap(minecraftServers[ssCurId()], minecraftServers[ssCurId() - 1]);
+		ssCurId()--;
+	}
+}
+
+void UIConfigMenu::ssEdit()
+{
+	uiServerEdit.start(&(minecraftServers[ssCurId()]));
+}
+
+void UIConfigMenu::ssMoveDown()
+{
+	if (ssCurId() < ssGetLen()-1) {
+		std::swap(minecraftServers[ssCurId()], minecraftServers[ssCurId() + 1]);
+		ssCurId()++;
+	}
+}
+
+int& UIConfigMenu::rssCurId()
+{
+	return relayServerSelecter.cur_id;
+}
+
+int UIConfigMenu::rssGetLen()
+{
+	return minecraftRServers.size();
+}
+
+const char* UIConfigMenu::rssGetEl(int id)
+{
+	return minecraftRServers[id].get_name();
+}
+
+void UIConfigMenu::rssAdd()
+{
+	minecraftRServers.push_back({ "(new)" });
+	rssCurId() = rssGetLen() - 1;
+	rssEdit();
+}
+
+void UIConfigMenu::rssRemove()
+{
+	if (rssGetLen())
+		minecraftRServers.erase(minecraftRServers.begin() + rssCurId());
+}
+
+void UIConfigMenu::rssMoveUp()
+{
+	if (rssCurId() > 0) {
+		std::swap(minecraftRServers[rssCurId()], minecraftRServers[rssCurId() - 1]);
+		rssCurId()--;
+	}
+}
+
+void UIConfigMenu::rssEdit()
+{
+	uiRServerEdit.start(&(minecraftRServers[rssCurId()]));
+}
+
+void UIConfigMenu::rssMoveDown()
+{
+	if (rssCurId() < rssGetLen() - 1) {
+		std::swap(minecraftRServers[rssCurId()], minecraftRServers[rssCurId() + 1]);
+		rssCurId()++;
+	}
 }
 
 void UIConfigMenu::ClickStart()
