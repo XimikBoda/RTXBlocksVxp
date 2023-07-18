@@ -15,9 +15,12 @@
 #include "T2Input.h"
 #include "UIEngine.h"
 #include "UIConfigMenu.h"
+#include <exception>
+#include <vector>
 #ifdef MRE
 #include "vmstdlib.h"
 #include "string.h"
+#include "../RTXBlocksVxp/Log.h"
 #endif // MRE
 
 T2Input t2input;
@@ -56,6 +59,13 @@ void read_from_file_to_addr(const char* path, void** addr);
 
 namespace Main {
 	void init_all() {
+#ifdef MRE // temp
+		LOG_M("Start");
+		std::set_terminate([]() {
+			LOG_M("Some");
+			});
+#endif
+
 		BlockPalette::init();
 		Keyboard::init();
 		Sock::init();

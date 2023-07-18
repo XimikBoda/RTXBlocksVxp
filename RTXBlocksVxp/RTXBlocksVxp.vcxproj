@@ -179,11 +179,13 @@
     <ClCompile Include="..\RTXBlocks\Time.cpp" />
     <ClCompile Include="..\RTXBlocks\UIBase.cpp" />
     <ClCompile Include="..\RTXBlocks\UIButton.cpp" />
+    <ClCompile Include="..\RTXBlocks\UIComboBox.cpp" />
     <ClCompile Include="..\RTXBlocks\UIConfigMenu.cpp" />
     <ClCompile Include="..\RTXBlocks\UIEngine.cpp" />
     <ClCompile Include="..\RTXBlocks\UITextBox.cpp" />
     <ClCompile Include="..\RTXBlocks\UUID.cpp" />
     <ClCompile Include="..\RTXBlocks\World.cpp" />
+    <ClCompile Include="cpp_fix.cpp" />
     <ClCompile Include="c_fix.c" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="mainVxp.cpp" />

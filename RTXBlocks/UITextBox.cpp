@@ -8,6 +8,8 @@
 extern UIEngine uiengine;
 extern T2Input t2input;
 
+extern int render_c;
+
 extern int input_cursor_x, input_cursor_y;
 
 UITextBox::UITextBox(UIBase* parent, int x, int y, int w, int h, char* text, int text_max_len)

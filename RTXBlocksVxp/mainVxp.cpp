@@ -15,10 +15,23 @@
 #include "../RTXBlocks/Keyboard.h"
 #include "Log.h"
 
+#ifdef GCC
+#define SAVE_ENTER \
+	asm("str SP, %0" : "=m" (return_sp));\
+	return_address = __builtin_return_address(0);
+#else
+#define SAVE_ENTER
+#endif
+
 VMUINT16* layer_bufs[2] = { 0,0 };
 VMINT layer_hdls[2] = { -1,-1 };
 
 int scr_w = 0, scr_h = 0;
+
+volatile void* return_address = 0;
+volatile unsigned long* return_sp = 0;
+
+
 
 extern unsigned short* main_canvas_buff;
 extern int_fixed* main_deep_buff;
@@ -32,7 +45,7 @@ void handle_penevt(VMINT event, VMINT x, VMINT y);
 void show_error_and_exit(const char* text);
 
 int p_time = 0;
-void main_timer(int tid) {
+void main_timer_(int tid) {
 	int n_time = vm_get_tick_count();
 	int d_time = n_time - p_time;
 	p_time = n_time;
@@ -40,7 +53,10 @@ void main_timer(int tid) {
 	Main::game_loop(d_time);
 	vm_graphic_flush_layer(layer_hdls, 2);
 	Keyboard::update();
-	Log::init();
+}
+void main_timer(int tid) {
+	SAVE_ENTER
+	main_timer_(tid);
 }
 
 void read_from_file_to_addr(const char* path_, void** addr) {
@@ -63,7 +79,7 @@ void read_from_file_to_addr(const char* path_, void** addr) {
 	vm_file_close(f);
 }
 
-void vm_main(void) {
+void vm_main_(void) {
 	scr_w = vm_graphic_get_screen_width();
 	scr_h = vm_graphic_get_screen_height();
 
@@ -71,7 +87,7 @@ void vm_main(void) {
 
 	srand(vm_get_tick_count());
 
-	Main::init_all();
+	Log::init();
 
 	vm_reg_sysevt_callback(handle_sysevt);
 	vm_reg_keyboard_callback(handle_keyevt);
@@ -79,10 +95,15 @@ void vm_main(void) {
 
 	main_deep_buff = (int_fixed*)vm_malloc(s_w * s_h * 4);
 	main_deep_buff2 = (int_fixed*)vm_malloc(s_w * s_h * 4);
+
+}
+void vm_main(void) {
+	SAVE_ENTER
+	vm_main_();
 }
 
 
-void handle_sysevt(VMINT message, VMINT param) {
+void handle_sysevt_(VMINT message, VMINT param) {
 	switch (message) {
 	case VM_MSG_CREATE:
 	case VM_MSG_ACTIVE:
@@ -100,6 +121,7 @@ void handle_sysevt(VMINT message, VMINT param) {
 		if (message == VM_MSG_CREATE) {
 			main_canvas_buff = layer_bufs[0];
 			main_canvas_buff2 = layer_bufs[1];
+			Main::init_all();
 			Main::init_all2();
 			vm_create_timer_ex(10, main_timer);
 		}
@@ -125,7 +147,14 @@ void handle_sysevt(VMINT message, VMINT param) {
 	}
 }
 
+void handle_sysevt(VMINT message, VMINT param) {
+	SAVE_ENTER
+	handle_sysevt_(message, param);
+}
+
+
 void handle_keyevt(VMINT event, VMINT keycode) {
+	SAVE_ENTER
 #ifdef WIN32   //Fix for MoDIS
 	if (VM_KEY_NUM1 <= keycode && keycode <= VM_KEY_NUM3)
 		keycode += 6;
@@ -136,10 +165,12 @@ void handle_keyevt(VMINT event, VMINT keycode) {
 }
 
 void handle_penevt(VMINT event, VMINT x, VMINT y) {
+	SAVE_ENTER
 	Main::handle_penevt(event, x, y);
 }
 
 void input_exit(VMINT state, VMWSTR text) {
+	SAVE_ENTER
 	vm_exit_app();
 }
 

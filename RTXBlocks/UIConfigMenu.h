@@ -62,8 +62,6 @@ public:
 		{8, 0, 13, 13},//13
 	};
 
-	std::vector<int> g = { 1,3 };
-
 	int cur_element = 0;
 
 	UIConfigMenu();
