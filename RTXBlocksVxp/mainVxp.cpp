@@ -59,23 +59,50 @@ void main_timer(int tid) {
 	main_timer_(tid);
 }
 
-void read_from_file_to_addr(const char* path_, void** addr) {
-	char path[100];
+#ifdef GCC
+#define fix_malloc vm_malloc
+#else
+#define fix_malloc malloc
+#endif // GCC
+
+
+int read_from_file_to_addr(const char* path_, void** addr) {
+	char path[200];
 	sprintf(path, "e:\\RTXBlocks\\%s", path_);
-	VMWCHAR wstr[100];
-	vm_gb2312_to_ucs2(wstr, 200, (VMSTR)path);
+	VMWCHAR wstr[200];
+	vm_gb2312_to_ucs2(wstr, 400, (VMSTR)path);
 	VMUINT red = 0, size = 0;
 
 	VMFILE f = vm_file_open(wstr, MODE_READ, 1);
 	if (f < 0) {
-		char tmp[100] = "";
+		//char tmp[100] = "";
 		//sprintf("%s not found", path);
-		show_error_and_exit("Some file not found");
-		return;
+		//show_error_and_exit("Some file not found");
+		*addr = 0;
+		return 0;
 	}
 	vm_file_getfilesize(f, &size);
-	*addr = vm_malloc(size);
+	*addr = fix_malloc(size);
 	vm_file_read(f, *addr, size, &red);
+	vm_file_close(f);
+	return size;
+}
+
+void write_from_addr_to_file(const char* path_, void* addr, int size) {
+	char path[200];
+	sprintf(path, "e:\\RTXBlocks\\%s", path_);
+	VMWCHAR wstr[200];
+	vm_gb2312_to_ucs2(wstr, 400, (VMSTR)path);
+	VMUINT red = 0;
+
+	VMFILE f = vm_file_open(wstr, MODE_CREATE_ALWAYS_WRITE, 1);
+	if (f < 0) {
+		//char tmp[100] = "";
+		//sprintf("%s not found", path);
+		//show_error_and_exit("Some file not found");
+		return;
+	}
+	vm_file_write(f, addr, size, &red);
 	vm_file_close(f);
 }
 

@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="..\RTXBlocks\BlockPalette.cpp" />
     <ClCompile Include="..\RTXBlocks\Chat.cpp" />
+    <ClCompile Include="..\RTXBlocks\cJSON.c" />
     <ClCompile Include="..\RTXBlocks\Entity.cpp" />
     <ClCompile Include="..\RTXBlocks\Keyboard.cpp" />
     <ClCompile Include="..\RTXBlocks\Main.cpp" />
@@ -182,6 +183,8 @@
     <ClCompile Include="..\RTXBlocks\UIComboBox.cpp" />
     <ClCompile Include="..\RTXBlocks\UIConfigMenu.cpp" />
     <ClCompile Include="..\RTXBlocks\UIEngine.cpp" />
+    <ClCompile Include="..\RTXBlocks\UIRServerEdit.cpp" />
+    <ClCompile Include="..\RTXBlocks\UIServerEdit.cpp" />
     <ClCompile Include="..\RTXBlocks\UITextBox.cpp" />
     <ClCompile Include="..\RTXBlocks\UUID.cpp" />
     <ClCompile Include="..\RTXBlocks\World.cpp" />

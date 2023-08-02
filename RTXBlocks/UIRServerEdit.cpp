@@ -34,6 +34,7 @@ void UIRServerEdit::Draw(unsigned short* buf)
 
 	Render::draw_fill_rect(buf, 0, y + 13, s_w, 1, 0xFFFF);
 
+	y += 20;
 	Render::draw_text_white(buf, 5, y, "Relay server addres:");
 	y += 15;
 

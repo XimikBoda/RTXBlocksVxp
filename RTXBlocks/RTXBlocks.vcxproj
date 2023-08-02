@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="BlockPalette.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="cJSON.c" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIComboBox.cpp" />
     <ClCompile Include="UIConfigMenu.cpp" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClInclude Include="BlockPalette.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="cJSON.h" />
     <ClInclude Include="collisions.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIComboBox.h" />

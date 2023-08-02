@@ -1,12 +1,34 @@
 #include "UIConfigMenu.h"
 #include "Render.h"
 #include "Keyboard.h"
+#include "Protocol.h"
+#include "string.h"
+#include "UIEngine.h"
+
+#include "cJSON.h"
+
+extern UIEngine uiengine;
+
+int read_from_file_to_addr(const char* path, void** addr);
+void write_from_addr_to_file(const char* path, void* addr, int size);
+
+const char* settings_filename = "settings.json";
+
+extern char r_ip[100];
+extern unsigned short r_tcp_port;
+extern unsigned short r_udp_port;
+extern char s_ip[100];
+extern unsigned short s_port;
+extern char Nickname[17];
+
+extern GameState gameState;
 
 UIConfigMenu::UIConfigMenu()
 {
 	if (uiarray[cur_element])
 		uiarray[cur_element]->isFocused = 1;
 
+	LoadSettings();
 }
 
 void UIConfigMenu::Draw(unsigned short* buf)
@@ -105,7 +127,7 @@ const char* UIConfigMenu::ssGetEl(int id)
 
 void UIConfigMenu::ssAdd()
 {
-	minecraftServers.push_back({"(new)"});
+	minecraftServers.push_back({ "(new)" });
 	ssCurId() = ssGetLen() - 1;
 	ssEdit();
 }
@@ -131,7 +153,7 @@ void UIConfigMenu::ssEdit()
 
 void UIConfigMenu::ssMoveDown()
 {
-	if (ssCurId() < ssGetLen()-1) {
+	if (ssCurId() < ssGetLen() - 1) {
 		std::swap(minecraftServers[ssCurId()], minecraftServers[ssCurId() + 1]);
 		ssCurId()++;
 	}
@@ -188,7 +210,216 @@ void UIConfigMenu::rssMoveDown()
 
 void UIConfigMenu::ClickStart()
 {
+	if (rssCurId() >= 0 && rssCurId() < rssGetLen() &&
+		ssCurId() >= 0 && ssCurId() < ssGetLen()) {
+		SaveSettings();
 
+		auto &rss = minecraftRServers[rssCurId()];
+		if (rss.host.size() >= 100)
+			return;
+		strcpy(r_ip, rss.host.c_str());
+		r_tcp_port = rss.Tport;
+		r_udp_port = rss.Uport;
+
+		auto& ss = minecraftServers[ssCurId()];
+		if (ss.host.size() >= 100)
+			return;
+		strcpy(s_ip, ss.host.c_str());
+		s_port = ss.port;
+
+		gameState = PlayS;
+
+		uiengine.PopUI();
+		Protocol::connect();
+	}
+}
+
+void UIConfigMenu::SaveSettings()
+{
+	cJSON* settings = cJSON_CreateObject();
+	if (settings == NULL)
+		return;
+
+	if (cJSON_AddStringToObject(settings, "Nickname", Nickname) == NULL) {
+		cJSON_Delete(settings);
+		return;
+	}
+
+	{
+		cJSON* relays = cJSON_AddArrayToObject(settings, "Relays");
+		if (relays == NULL) {
+			cJSON_Delete(settings);
+			return;
+		}
+
+		for (int i = 0; i < minecraftRServers.size(); ++i) {
+			cJSON* relay = cJSON_CreateObject();
+
+			if (cJSON_AddStringToObject(relay, "host", minecraftRServers[i].host.c_str()) == NULL) {
+				cJSON_Delete(settings);
+				return;
+			}
+
+			if (cJSON_AddNumberToObject(relay, "tcp port", minecraftRServers[i].Tport) == NULL) {
+				cJSON_Delete(settings);
+				return;
+			}
+
+			if (cJSON_AddNumberToObject(relay, "udp port", minecraftRServers[i].Uport) == NULL) {
+				cJSON_Delete(settings);
+				return;
+			}
+
+			cJSON_AddItemToArray(relays, relay);
+		}
+	}
+
+	{
+		cJSON* servers = cJSON_AddArrayToObject(settings, "Servers");
+		if (servers == NULL) {
+			cJSON_Delete(settings);
+			return;
+		}
+
+		for (int i = 0; i < minecraftServers.size(); ++i) {
+			cJSON* server = cJSON_CreateObject();
+
+			if (cJSON_AddStringToObject(server, "name", minecraftServers[i].name.c_str()) == NULL) {
+				cJSON_Delete(settings);
+				return;
+			}
+
+			if (cJSON_AddStringToObject(server, "host", minecraftServers[i].host.c_str()) == NULL) {
+				cJSON_Delete(settings);
+				return;
+			}
+
+			if (cJSON_AddNumberToObject(server, "port", minecraftServers[i].port) == NULL) {
+				cJSON_Delete(settings);
+				return;
+			}
+
+			cJSON_AddItemToArray(servers, server);
+		}
+	}
+
+	if (cJSON_AddNumberToObject(settings, "Last relay", relayServerSelecter.cur_id) == NULL) {
+		cJSON_Delete(settings);
+		return;
+	}
+
+	if (cJSON_AddNumberToObject(settings, "Last server", serverSelecter.cur_id) == NULL) {
+		cJSON_Delete(settings);
+		return;
+	}
+
+	char* out_json = cJSON_Print(settings);
+
+	if (out_json != NULL) {
+		write_from_addr_to_file(settings_filename, out_json, strlen(out_json));
+
+		free(out_json);
+	}
+
+	cJSON_Delete(settings);
+}
+
+void UIConfigMenu::LoadSettings()
+{
+	char* in_json;
+	int in_json_size = read_from_file_to_addr(settings_filename, (void**)&in_json);
+
+	if (in_json == 0) {
+		//TODO (default)
+		return;
+	}
+
+	cJSON* settings = cJSON_ParseWithLength(in_json, in_json_size);
+
+	{
+		cJSON* nick = cJSON_GetObjectItemCaseSensitive(settings, "Nickname");
+		if (cJSON_IsString(nick) && (nick->valuestring != NULL) && strlen(nick->valuestring) < 17)
+			strcpy(Nickname, nick->valuestring);
+	}
+
+	{
+		std::vector<MinecraftRServerEl> minecraftRServers_tmp;
+
+		cJSON* relay = 0, * relays = cJSON_GetObjectItemCaseSensitive(settings, "Relays");
+		cJSON_ArrayForEach(relay, relays) {
+			MinecraftRServerEl el;
+
+			cJSON* host = cJSON_GetObjectItemCaseSensitive(relay, "host");
+			cJSON* tport = cJSON_GetObjectItemCaseSensitive(relay, "tcp port");
+			cJSON* uport = cJSON_GetObjectItemCaseSensitive(relay, "udp port");
+
+			if (cJSON_IsString(host) && (host->valuestring != NULL))
+				el.host = host->valuestring;
+			else
+				return;
+
+			if (cJSON_IsNumber(tport) && tport->valueint >= 0 && tport->valueint <= ((1 << 16) - 1))
+				el.Tport = tport->valueint;
+			else
+				return;
+
+			if (cJSON_IsNumber(uport) && uport->valueint >= 0 && uport->valueint <= ((1 << 16) - 1))
+				el.Uport = uport->valueint;
+			else
+				return;
+
+			minecraftRServers_tmp.push_back(el);
+		}
+
+		minecraftRServers = minecraftRServers_tmp;
+	}
+
+	{
+		std::vector<MinecraftServerEl> minecraftServers_tmp;
+
+		cJSON* server = 0, * servers = cJSON_GetObjectItemCaseSensitive(settings, "Servers");
+		cJSON_ArrayForEach(server, servers) {
+			MinecraftServerEl el;
+
+			cJSON* name = cJSON_GetObjectItemCaseSensitive(server, "name");
+			cJSON* host = cJSON_GetObjectItemCaseSensitive(server, "host");
+			cJSON* port = cJSON_GetObjectItemCaseSensitive(server, "port");
+
+			if (cJSON_IsString(name) && (name->valuestring != NULL))
+				el.name = name->valuestring;
+			else
+				return;
+
+			if (cJSON_IsString(host) && (host->valuestring != NULL))
+				el.host = host->valuestring;
+			else
+				return;
+
+			if (cJSON_IsNumber(port) && port->valueint >= 0 && port->valueint <= ((1 << 16) - 1))
+				el.port = port->valueint;
+			else
+				return;
+
+			minecraftServers_tmp.push_back(el);
+		}
+
+		minecraftServers = minecraftServers_tmp;
+	}
+
+	{
+		cJSON* lrelay = cJSON_GetObjectItemCaseSensitive(settings, "Last relay");
+		if (cJSON_IsNumber(lrelay))
+			relayServerSelecter.cur_id = lrelay->valueint;
+	}
+
+	{
+		cJSON* lserver = cJSON_GetObjectItemCaseSensitive(settings, "Last server");
+		if (cJSON_IsNumber(lserver))
+			serverSelecter.cur_id = lserver->valueint;
+	}
+
+	cJSON_Delete(settings);
+	free(in_json);
 }
 
 void UIConfigMenu::MoveFocus(int new_id)

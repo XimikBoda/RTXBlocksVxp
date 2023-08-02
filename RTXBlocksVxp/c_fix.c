@@ -1,4 +1,3 @@
-
 #ifndef WIN32
 #include "vmstdlib.h"
 #include "vmsys.h"
@@ -65,12 +64,13 @@ int snprintf(char* buffer, size_t n, const char* format, ...) {
 	return(ret);
 }
 
-double strtod(const char* strSource, char** endptr) {
-	double res = 0;
-	int pos = 0;
-	vm_sscanf(strSource, "%lf%n", &res, &pos);
-	endptr = strSource + pos;
-	return res;
-}
+
 
 #endif
+//double strtod__(const char* strSource, char** endptr) {
+//	float res = 0;
+//	int pos = 0;
+//	vm_sscanf(strSource, "%f%n", &res, &pos);
+//	endptr = strSource + pos;
+//	return res;
+//}

@@ -169,7 +169,7 @@ int vm_get_tick_count() {
 	return cl.getElapsedTime().asMilliseconds() & 0xFFFFFFFF;
 }
 
-void read_from_file_to_addr(const char* path, void** addr) {
+int read_from_file_to_addr(const char* path, void** addr) {
 	std::ifstream in(path, std::ios_base::binary);
 	if (in.good()) {
 		in.seekg(0, std::ios::end);
@@ -178,8 +178,20 @@ void read_from_file_to_addr(const char* path, void** addr) {
 		*addr = malloc(size);
 		in.read((char*)*addr, size);
 		in.close();
+		return size;
 	}
+	else {
+		*addr = 0;
+		return 0;
+	}
+}
 
+void write_from_addr_to_file(const char* path, void* addr, int size) {
+	std::ofstream out(path, std::ios_base::binary);
+	if (out.good()) {
+		out.write((char*)addr, size);
+		out.close();
+	}
 }
 
 

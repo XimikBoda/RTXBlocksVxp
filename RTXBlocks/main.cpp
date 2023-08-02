@@ -28,7 +28,7 @@
 
 T2Input t2input;
 UIEngine uiengine;
-UIConfigMenu uiconfigMenu;
+UIConfigMenu *uiconfigMenu;
 
 
 int render_c = 0;
@@ -58,42 +58,10 @@ extern int layer_hdls[2];
 int layer_hdls[2] = { -1,-1 };
 #endif // MRE
 
-void read_from_file_to_addr(const char* path, void** addr);
-
-#ifdef GCC
-void backstop() { // need to analyse
-	LOG_M("exception");
-	//auto const ep = std::current_exception();
-	//if (ep) {
-	//	try {
-	//		int status;
-	//		//auto const etype = abi::__cxa_demangle(abi::__cxa_current_exception_type()->name(), 0, 0, &status);
-	//		//LOG_M("Terminating with uncaught exception of type `");
-	//		//LOG_M(etype)
-	//		std::rethrow_exception(ep);
-
-	//	}
-	//	catch (const std::exception& e) {
-	//		LOG_M("with `what()` = ");
-	//		LOG_M("e.what()");
-	//	}
-	//	catch (...) {
-	//		LOG_M("Unknow exception");
-	//	}
-	//}
-	std::abort();
-}
-#endif // MRE
+int read_from_file_to_addr(const char* path, void** addr);
 
 namespace Main {
 	void init_all() {
-#ifdef GCC // temp
-		LOG_M("Start");
-		std::set_terminate(backstop);
-#endif
-
-
-
 		BlockPalette::init();
 		Keyboard::init();
 		Sock::init();
@@ -119,10 +87,12 @@ namespace Main {
 		t2input.scr_buf = (unsigned char*)main_canvas_buff2;
 		t2input.layer_handle = layer_hdls[1];
 
-		uiengine.PushUI((UIBase*)&uiconfigMenu);
+		uiconfigMenu = new UIConfigMenu;
+		uiengine.PushUI((UIBase*)uiconfigMenu);
 	}
 
 	void deinit_all() {
+		delete uiconfigMenu;
 		Sock::deinit();
 		PacketMaker::deinit();
 		PacketOpener::deinit();

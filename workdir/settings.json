@@ -1,0 +1,19 @@
+{
+	"Nickname":	"RTX",
+	"Relays":	[{
+			"host":	"RTXBlocks.crabdance.com",
+			"tcp port":	25501,
+			"udp port":	25502
+		}, {
+			"host":	"127.0.0.1",
+			"tcp port":	25501,
+			"udp port":	25502
+		}],
+	"Servers":	[{
+			"name":	"Local server",
+			"host":	"127.0.0.1",
+			"port":	25565
+		}],
+	"Last relay":	1,
+	"Last server":	0
+}

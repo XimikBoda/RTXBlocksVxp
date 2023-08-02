@@ -28,15 +28,10 @@ extern int udp_in_buf_pos, udp_out_buf_pos;
 #define TO_TCP tcp_out_buf, tcp_out_buf_pos
 #define TO_UDP udp_out_buf, udp_out_buf_pos
 
-//temp
-#ifdef GCC
-#include <D:\my_ip.txt>
-#else
-const char* r_ip = "127.0.0.1";
-#endif // REAL
+char r_ip[100] = "127.0.0.1";
 unsigned short r_tcp_port = 25501;
 unsigned short r_udp_port = 25502;
-const char* s_ip = "127.0.0.1";//"MY-PRETTY";
+char s_ip[100] = "127.0.0.1";
 unsigned short s_port = 25565;
 char Nickname[17] = "RTX";
 int my_id = -1;

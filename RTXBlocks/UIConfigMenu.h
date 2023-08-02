@@ -51,7 +51,7 @@ class UIConfigMenu : UIBase
 		(UIConfigMenu::UIBase*)&(UIConfigMenu::rss_down), //6
 		(UIConfigMenu::UIBase*)&(UIConfigMenu::startButton) //13
 	};
-	char uiarray_moves[14][4] =
+	const char uiarray_moves[14][4] =
 	{
 		{13, 1, 0, 0},//0
 		{0, 2, 1, 1},//1
@@ -112,5 +112,8 @@ private:
 	void rssMoveDown();
 
 	void ClickStart();
+
+	void SaveSettings();
+	void LoadSettings();
 };
 

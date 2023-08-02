@@ -25,8 +25,8 @@ build:
 	
 	$(GCC) $(GCC_PARAM) -c $(CURDIR)\c_fix.c -o $(CURDIR)\arm\c_fix.o
 	$(GCC) $(GCC_PARAM) -c $(CURDIR)\..\RTXBlocks\miniz.c -o $(CURDIR)\arm\miniz.o
+	$(GCC) $(GCC_PARAM) -c $(CURDIR)\..\RTXBlocks\cJSON.c -o $(CURDIR)\arm\cJSON.o
 
-	
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\cpp_fix.cpp -o $(CURDIR)\arm\cpp_fix.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\mainVxp.cpp -o $(CURDIR)\arm\mainVxp.o
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\Sock.cpp -o $(CURDIR)\arm\Sock.o
@@ -57,7 +57,7 @@ build:
 	$(GPP) $(GPP_PARAM) -c $(CURDIR)\..\RTXBlocks\UIRServerEdit.cpp -o $(CURDIR)\arm\UIRServerEdit.o
 
 #	Link app
-	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\mainVxp.o $(CURDIR)\arm\Main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o \
+	$(GCC) -o $(CURDIR)\$(PROJECT_NAME).axf $(CURDIR)\arm\gccmain.o $(CURDIR)\arm\mainVxp.o $(CURDIR)\arm\Main.o $(CURDIR)\arm\c_fix.o $(CURDIR)\arm\miniz.o $(CURDIR)\arm\cJSON.o \
 	$(CURDIR)\arm\Sock.o $(CURDIR)\arm\Protocol.o $(CURDIR)\arm\PacketMaker.o $(CURDIR)\arm\PacketOpener.o $(CURDIR)\arm\World.o $(CURDIR)\arm\BlockPalette.o \
 	$(CURDIR)\arm\PlayerInfo.o $(CURDIR)\arm\Player.o $(CURDIR)\arm\Time.o $(CURDIR)\arm\Chat.o $(CURDIR)\arm\UUID.o $(CURDIR)\arm\Keyboard.o $(CURDIR)\arm\Render.o \
 	$(CURDIR)\arm\Log.o $(CURDIR)\arm\Entity.o $(CURDIR)\arm\T2Input.o $(CURDIR)\arm\UIBase.o $(CURDIR)\arm\UIButton.o $(CURDIR)\arm\UIConfigMenu.o $(CURDIR)\arm\UIEngine.o \

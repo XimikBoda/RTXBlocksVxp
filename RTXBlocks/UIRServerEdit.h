@@ -8,7 +8,7 @@ struct MinecraftRServerEl
 {
 	std::string host;
 	unsigned short Tport = 25501;
-	unsigned short Uport = 25501;
+	unsigned short Uport = 25502;
 	const char* get_name();
 };
 
