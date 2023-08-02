@@ -98,6 +98,11 @@ namespace Render {
 			buf_i[i] = word;
 	}
 
+	void draw_text_white_centered(unsigned short* buf, int x, int y, int w, const char* str) {
+		int len = strlen(str);
+		draw_text_white_by_len(buf, x + (w-pro_char_width * len) / 2, y, str, len);
+	}
+
 	void draw_text_white(unsigned short* buf, int x, int y, const char* str) {
 		for (int ci = 0; *str; ++ci, ++str) {
 			const unsigned char* font_ch = ProFont6x11 + 5 + 12 * (*str) + 1;
@@ -170,6 +175,39 @@ namespace Render {
 		}
 	}
 
+	inline int max(int a, int b) {
+		return a > b ? a : b;
+	}
+	inline int min(int a, int b) {
+		return a < b ? a : b;
+	}
+
+	void draw_fill_rect(unsigned short* buf, int x, int y, int w, int h, unsigned short color) {
+		int sx = max(0, x), ex = min(x + w, s_w);
+		int sy = max(0, y), ey = min(y + h, s_h);
+
+		for (int iy = sy; iy < ey; ++iy)
+			for (int ix = sx; ix < ex; ++ix)
+				buf[ix + iy * s_w] = color;
+	}
+
+	void draw_fill_rect_with_borders(unsigned short* buf, int x, int y, int w, int h, unsigned short fill_color, unsigned short border_color) {
+		int sx = max(0, x), ex = min(x + w, s_w) - 1;
+		int sy = max(0, y), ey = min(y + h, s_h) - 1;
+
+		for (int ix = sx; ix < ex; ++ix)
+			buf[ix + sy * s_w] = buf[ix + ey * s_w] = border_color;
+
+		for (int iy = sy; iy < ey; ++iy)
+			buf[sx + iy * s_w] = buf[ex + iy * s_w] = border_color;
+
+		sx++, sy++;
+
+		for (int iy = sy; iy < ey; ++iy)
+			for (int ix = sx; ix < ex; ++ix)
+				buf[ix + iy * s_w] = fill_color;
+	}
+
 	float len(float x1, float y1, float x2, float y2) {
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	}
@@ -182,6 +220,8 @@ namespace Render {
 	float len(const vector3f& v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
+
+
 
 	void swap(float& a, float& b) {
 		float c = a;

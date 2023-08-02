@@ -149,6 +149,10 @@
   <ItemGroup>
     <ClCompile Include="BlockPalette.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="cJSON.c" />
+    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIComboBox.cpp" />
+    <ClCompile Include="UIConfigMenu.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -163,13 +167,22 @@
     <ClCompile Include="Sock.cpp" />
     <ClCompile Include="T2Input.cpp" />
     <ClCompile Include="Time.cpp" />
+    <ClCompile Include="UIBase.cpp" />
+    <ClCompile Include="UIEngine.cpp" />
+    <ClCompile Include="UIRServerEdit.cpp" />
+    <ClCompile Include="UIServerEdit.cpp" />
+    <ClCompile Include="UITextBox.cpp" />
     <ClCompile Include="UUID.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockPalette.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="cJSON.h" />
     <ClInclude Include="collisions.h" />
+    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIComboBox.h" />
+    <ClInclude Include="UIConfigMenu.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Main.h" />
@@ -184,6 +197,11 @@
     <ClInclude Include="Sock.h" />
     <ClInclude Include="T2Input.h" />
     <ClInclude Include="Time.h" />
+    <ClInclude Include="UIBase.h" />
+    <ClInclude Include="UIEngine.h" />
+    <ClInclude Include="UIRServerEdit.h" />
+    <ClInclude Include="UIServerEdit.h" />
+    <ClInclude Include="UITextBox.h" />
     <ClInclude Include="UUID.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
