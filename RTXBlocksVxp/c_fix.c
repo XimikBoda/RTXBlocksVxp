@@ -54,4 +54,23 @@ int sprintf(char* buffer, const char* format, ...) {
 
 	return(ret);
 }
+int snprintf(char* buffer, size_t n, const char* format, ...) {
+	va_list aptr;
+	int ret;
+
+	va_start(aptr, format);
+	ret = vm_vsprintf(buffer, format, aptr);
+	va_end(aptr);
+
+	return(ret);
+}
+
+double strtod(const char* strSource, char** endptr) {
+	double res = 0;
+	int pos = 0;
+	vm_sscanf(strSource, "%lf%n", &res, &pos);
+	endptr = strSource + pos;
+	return res;
+}
+
 #endif

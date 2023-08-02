@@ -19,15 +19,31 @@ void* malloc(size_t size)
 	return vm_malloc(size);
 }
 
+void* calloc(size_t number, size_t size)
+{
+	return vm_calloc(size * number);
+}
+
+void* realloc(void* ptr, size_t newsize) {
+	return vm_realloc(ptr, newsize);
+}
+
 void free(void* ptr)
 {
 	vm_free(ptr);
 }
 
-void __cxa_pure_virtual()
+void* _calloc_r(struct _reent* unused, size_t count, size_t size)
 {
-	while (1);
+	(void)unused;
+	void* ret = calloc(count, size);
+	return ret;
 }
+
+//void __cxa_pure_virtual()
+//{
+//	while (1);
+//}
 
 //int __cxa_guard_acquire(int* p)
 //{
@@ -39,10 +55,10 @@ void __cxa_pure_virtual()
 //	return;
 //}
 
-int* __errno()
-{
-	return &__g_errno;
-}
+//int* __errno()
+//{
+//	return &__g_errno;
+//}
 
 void gcc_entry(unsigned int entry, unsigned int init_array_start, unsigned int count)
 {
@@ -52,7 +68,7 @@ void gcc_entry(unsigned int entry, unsigned int init_array_start, unsigned int c
 
 	if (init_array_start == 0)
 		init_array_start = (unsigned int)&__init_array_start,
-		count = ((unsigned int)&__init_array_end - (unsigned int)&__init_array_start)/4;
+		count = ((unsigned int)&__init_array_end - (unsigned int)&__init_array_start) / 4;
 
 	ptr = (__init_array)init_array_start;
 	for (i = 1; i < count; i++)

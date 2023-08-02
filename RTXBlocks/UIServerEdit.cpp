@@ -4,6 +4,7 @@
 #include "UIEngine.h"
 #ifdef MRE
 #include "vmstdlib.h"
+#include "string.h"
 #endif // MRE
 
 

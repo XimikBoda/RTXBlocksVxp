@@ -6,6 +6,7 @@ UIConfigMenu::UIConfigMenu()
 {
 	if (uiarray[cur_element])
 		uiarray[cur_element]->isFocused = 1;
+
 }
 
 void UIConfigMenu::Draw(unsigned short* buf)
