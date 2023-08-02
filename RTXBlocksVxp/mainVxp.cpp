@@ -54,6 +54,7 @@ void main_timer_(int tid) {
 	vm_graphic_flush_layer(layer_hdls, 2);
 	Keyboard::update();
 }
+
 void main_timer(int tid) {
 	SAVE_ENTER
 	main_timer_(tid);
@@ -122,8 +123,8 @@ void vm_main_(void) {
 
 	main_deep_buff = (int_fixed*)vm_malloc(s_w * s_h * 4);
 	main_deep_buff2 = (int_fixed*)vm_malloc(s_w * s_h * 4);
-
 }
+
 void vm_main(void) {
 	SAVE_ENTER
 	vm_main_();

@@ -4,9 +4,11 @@ GPP = $(GCC_ARM_NONE_EABI)\arm-none-eabi-g++
 INCLUDES = -I "$(MRE_SDK)\include" -I "$(CURDIR)\include" -I "$(CURDIR)\ResID" -I "$(CURDIR)"
 DEFINES = -D _MINIGUI_LIB_ -D _USE_MINIGUIENTRY -D _NOUNIX_ -D _FOR_WNC -D __MRE_SDK__ -D   __MRE_VENUS_NORMAL__  -D  __MMI_MAINLCD_240X320__ -D MRE -D GCC -D __MRE_COMPILER_GCC__
 
+
 SHARED_PARAM = -c -fpic -march=armv5te -fvisibility=hidden -O2 -mlittle-endian $(INCLUDES) $(DEFINES) -fdata-sections -ffunction-sections
 GCC_PARAM = -D__MRE_COMPILER_GCC__ $(SHARED_PARAM)
 GPP_PARAM = -fno-threadsafe-statics $(SHARED_PARAM) -fno-exceptions -fno-non-call-exceptions
+
 
 LINK_LIB = -lstdc++ -l:percommon.a -l:pertcp.a -l:persensor.a -l:persmsper.a -l:perbitstream.a -l:percontact.a -l:permms.a -l:persmsmng.a -l:peraudio.a -l:percallout.a -l:percam.a -l:perfile.a -l:perhttp.a -l:persim.a -l:perrecord.a -l:persmssp.a -l:perlbs.a -l:perpro.a -l:pervideo.a -l:perxml.a -l:persec.a -l:persysstorage.a -l:perpayment.a -l:perbt.a -l:perpn.a -l:perudp.a -l:persysfile.a -l:persso.a 
 LINK_PARAM = -fno-threadsafe-statics -Wl,--gc-sections  -fpic -fpcc-struct-return --disable-libstdcxx-verbose -pie -lm -T "$(CURDIR)\scat.ld" 
